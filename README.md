@@ -1,5 +1,5 @@
 # ublox_read_2
-A library for parsing UBLOX packets and interfacing with UBLOX gps receivers. It has been designed for use with the M8N and F9P GNSS receivers.
+A library for parsing UBLOX packets and interfacing with UBLOX gps receivers in ROS2. It has been designed for use with the M8N and F9P GNSS receivers.
 
 This library provides rather basic functionality and is designed to work under a linux environment, however it should probably work in Windows or Mac as it uses the cross-platform async_comm library as the serial interface.
 
@@ -7,4 +7,4 @@ The UBX parsing functionality is abstracted into a library for easy integration 
 
 Hardware documentation found here Software documentation found here.
 
-Derived from https://github.com/byu-magicc/UBLOX_read
+Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version of this library.
