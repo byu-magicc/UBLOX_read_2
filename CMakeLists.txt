@@ -54,4 +54,26 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES builtin_interfaces std_msgs
 )
 
+find_package(Eigen3 REQUIRED)
+find_package(Boost)
+add_subdirectory(lib/async_comm)
+set(async_comm_LIBRARIES async_comm)
+set(async_comm_INCLUDE_DIRS lib/async_comm/include;${Boost_INCLUDE_DIRS})
+
+
+message("async_comm_INCLUDE_DIRS: ${async_comm_INCLUDE_DIRS}\n")
+
+add_library(UBLOX
+    src/ublox.cpp
+	    src/parsers/ubx_maps.cpp
+    src/parsers/ubx.cpp
+    src/parsers/rtcm.cpp
+    src/parsers/nav.cpp
+    src/utctime.cpp
+)
+
+message("UBLOX Boost include dirs: ${Boost_INCLUDE_DIRS}")
+target_link_libraries(UBLOX ${async_comm_LIBRARIES} ${gnss_utils_LIBRARIES})
+target_include_directories(UBLOX PUBLIC include ${async_comm_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
+
 ament_package()
