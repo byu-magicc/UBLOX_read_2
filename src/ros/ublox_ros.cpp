@@ -2,12 +2,8 @@
 #include <fstream>
 #include <signal.h>
 
-#include <rosbag/bag.h>
-#include <std_msgs/Int32.h>
-#include <std_msgs/String.h>
-
-using namespace std;
-
+#include "std_msgs/msg/int32.h"
+#include "std_msgs/msg/string.h"
 
 #include <UBLOX/ublox_ros.h>
 

@@ -20,6 +20,13 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+find_package(Eigen3 REQUIRED)
+find_package(Boost)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -32,30 +39,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-find_package(std_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
 
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/CfgValGetType.msg"
-  "msg/Ephemeris.msg"
-  "msg/GlonassEphemeris.msg"
-  "msg/Observation.msg"
-  "msg/ObsVec.msg"
-  "msg/PositionVelocityTime.msg"
-  "msg/PosVelEcef.msg"
-  "msg/RelPos.msg"
-  "msg/RelPosFlags.msg"
-  "msg/RTCMInput.msg"
-  "msg/Satellite.msg"
-  "msg/SatelliteStatus.msg"
-  "msg/SurveyStatus.msg"
-  DEPENDENCIES builtin_interfaces std_msgs
-)
-
-find_package(Eigen3 REQUIRED)
-find_package(Boost)
 add_subdirectory(lib/async_comm)
 set(async_comm_LIBRARIES async_comm)
 set(async_comm_INCLUDE_DIRS lib/async_comm/include;${Boost_INCLUDE_DIRS})
@@ -75,5 +59,51 @@ add_library(UBLOX
 message("UBLOX Boost include dirs: ${Boost_INCLUDE_DIRS}")
 target_link_libraries(UBLOX ${async_comm_LIBRARIES} ${gnss_utils_LIBRARIES})
 target_include_directories(UBLOX PUBLIC include ${async_comm_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
+
+option(BUILD_ROS "Build ROS Node" ON)
+if (${BUILD_ROS})
+  message(STATUS "BUILDING UBLOX ROS PACKAGE")
+  find_package(ament_cmake REQUIRED)
+  find_package(rosbag2 REQUIRED)
+  find_package(rclcpp REQUIRED)
+  find_package(sensor_msgs REQUIRED)
+
+  rosidl_generate_interfaces(${PROJECT_NAME}
+    "msg/CfgValGetType.msg"
+    "msg/Ephemeris.msg"
+    "msg/GlonassEphemeris.msg"
+    "msg/Observation.msg"
+    "msg/ObsVec.msg"
+    "msg/PositionVelocityTime.msg"
+    "msg/PosVelEcef.msg"
+    "msg/RelPos.msg"
+    "msg/RelPosFlags.msg"
+    "msg/RTCMInput.msg"
+    "msg/Satellite.msg"
+    "msg/SatelliteStatus.msg"
+    "msg/SurveyStatus.msg"
+    # "srv/CfgValGet.srv"
+		# "srv/CfgValDel.srv"
+		# "srv/CfgValSet.srv"
+		# "srv/CfgReset.srv"
+		# "srv/CfgValGetAll.srv"
+		# "srv/GetVersion.srv"
+		# "srv/initModule.srv"
+    DEPENDENCIES builtin_interfaces std_msgs
+  )
+	
+  ament_Export_libraries(UBLOX)
+  ament_export_include_directories(include)
+  ament_export_dependencies(std_msgs message_runtime)
+	
+  add_executable(ublox_ros src/ros/ublox_ros.cpp) 
+  ament_target_dependencies(ublox_ros std_msgs)
+	# 	src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp)
+
+  install(TARGETS
+  ublox_ros
+  DESTINATION lib/${PROJECT_NAME})
+
+endif()
 
 ament_package()
