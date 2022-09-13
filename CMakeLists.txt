@@ -82,23 +82,29 @@ if (${BUILD_ROS})
     "msg/Satellite.msg"
     "msg/SatelliteStatus.msg"
     "msg/SurveyStatus.msg"
-    # "srv/CfgValGet.srv"
-		# "srv/CfgValDel.srv"
-		# "srv/CfgValSet.srv"
-		# "srv/CfgReset.srv"
-		# "srv/CfgValGetAll.srv"
-		# "srv/GetVersion.srv"
-		# "srv/initModule.srv"
+    "srv/CfgValGet.srv"
+		"srv/CfgValDel.srv"
+		"srv/CfgValSet.srv"
+		"srv/CfgReset.srv"
+		"srv/CfgValGetAll.srv"
+		"srv/GetVersion.srv"
+		"srv/InitModule.srv"
     DEPENDENCIES builtin_interfaces std_msgs
   )
 	
   ament_Export_libraries(UBLOX)
   ament_export_include_directories(include)
-  ament_export_dependencies(std_msgs message_runtime)
+  ament_export_dependencies(std_msgs rosidl_default_runtime message_runtime)
 	
+
   add_executable(ublox_ros src/ros/ublox_ros.cpp) 
   ament_target_dependencies(ublox_ros std_msgs)
 	# 	src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp)
+
+  rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+  target_link_libraries(ublox_ros UBLOX)
+  target_include_directories(ublox_ros PUBLIC ../../devel/include)
 
   install(TARGETS
   ublox_ros
