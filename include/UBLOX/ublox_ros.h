@@ -2,8 +2,8 @@
 #define UBLOX_ROS_H
 
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/nav_sat_fix.h>
-#include <sensor_msgs/msg/nav_sat_status.h>
+#include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <sensor_msgs/msg/nav_sat_status.hpp>
 
 #include "UBLOX/ublox.h"
 
@@ -32,7 +32,7 @@
 namespace ublox_ros
 {
 
-class UBLOX_ROS
+class UBLOX_ROS : public rclcpp::Node
 {
 public:
     UBLOX_ROS();
@@ -41,26 +41,23 @@ public:
 private:
     ublox::UBLOX* ublox_ = nullptr;
 
-    ros::NodeHandle nh_;
-    ros::NodeHandle nh_private_;
+    rclcpp::Publisher<ublox_read_2::msg::PositionVelocityTime>::SharedPtr pvt_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::SurveyStatus>::SharedPtr survey_status_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::RelPos>::SharedPtr relpos_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::RelPosFlags>::SharedPtr relposflag_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::PosVelEcef>::SharedPtr ecef_pub_;
+    // rclcpp::Publisher<ublox_read_2::msg::NavSatFix>::SharedPtr nav_sat_fix_pub_;
+    // rclcpp::Publisher<sensor_msgs::msg::NavSatStatus>::SharedPtr nav_sat_status_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::Ephemeris>::SharedPtr eph_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::GlonassEphemeris>::SharedPtr geph_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::ObsVec>::SharedPtr obs_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::RTCMInput>::SharedPtr rtcm_input_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::SatelliteStatus>::SharedPtr sat_status_pub_;
 
-    ros::Publisher pvt_pub_;
-    ros::Publisher survey_status_pub_;
-    ros::Publisher relpos_pub_;
-    ros::Publisher relposflag_pub_;
-    ros::Publisher ecef_pub_;
-    ros::Publisher nav_sat_fix_pub_;
-    ros::Publisher nav_sat_status_pub_;
-    ros::Publisher eph_pub_;
-    ros::Publisher geph_pub_;
-    ros::Publisher obs_pub_;
-    ros::Publisher rtcm_input_pub_;
-    ros::Publisher sat_status_pub_;
-
-    ros::Publisher base_ecef_pub_;
-    ros::Publisher base_pvt_pub_;
-    ros::Publisher *ecef_pub_ptr_;
-    ros::Publisher *pvt_pub_ptr_;
+    rclcpp::Publisher<ublox_read_2::msg::PosVelEcef>::SharedPtr base_ecef_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::PositionVelocityTime>::SharedPtr base_pvt_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::PosVelEcef>::SharedPtr curr_ecef_pub_;
+    rclcpp::Publisher<ublox_read_2::msg::PositionVelocityTime>::SharedPtr curr_pvt_pub_;
 
     /**
      * @brief Callback for filling a PosVelTime ROS message from a UBX callback
@@ -98,20 +95,20 @@ private:
     void ephCB(const Ephemeris& eph);
     void gephCB(const GlonassEphemeris& eph);
 
-    bool cfgValGet(ublox::CfgValGet::Request &req, ublox::CfgValGet::Response &res);
-    bool cfgValGetAll(ublox::CfgValGetAll::Request &req, ublox::CfgValGetAll::Response &res);
-    bool cfgValDel(ublox::CfgValDel::Request &req, ublox::CfgValDel::Response &res);
-    bool cfgValSet(ublox::CfgValSet::Request &req, ublox::CfgValSet::Response &res);
-    bool cfgReset(ublox::CfgReset::Request &req, ublox::CfgReset::Response &res);
-    bool initModule(ublox::initModule::Request &req, ublox::initModule::Response &res);
-    bool getVersion(ublox::GetVersion::Request &req, ublox::GetVersion::Response &res);
-    ros::ServiceServer cfg_val_get_;
-    ros::ServiceServer cfg_val_get_all_;
-    ros::ServiceServer cfg_val_del_;
-    ros::ServiceServer cfg_val_set_;
-    ros::ServiceServer cfg_reset_;
-    ros::ServiceServer init_module_;
-    ros::ServiceServer get_version_;
+    bool cfgValGet(ublox_read_2::srv::CfgValGet::Request &req, ublox_read_2::srv::CfgValGet::Response &res);
+    bool cfgValGetAll(ublox_read_2::srv::CfgValGetAll::Request &req, ublox_read_2::srv::CfgValGetAll::Response &res);
+    bool cfgValDel(ublox_read_2::srv::CfgValDel::Request &req, ublox_read_2::srv::CfgValDel::Response &res);
+    bool cfgValSet(ublox_read_2::srv::CfgValSet::Request &req, ublox_read_2::srv::CfgValSet::Response &res);
+    bool cfgReset(ublox_read_2::srv::CfgReset::Request &req, ublox_read_2::srv::CfgReset::Response &res);
+    bool initModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res);
+    bool getVersion(ublox_read_2::srv::GetVersion::Request &req, ublox_read_2::srv::GetVersion::Response &res);
+    rclcpp::Service<ublox_read_2::srv::CfgValGet>::SharedPtr cfg_val_get_;
+    rclcpp::Service<ublox_read_2::srv::CfgValGetAll>::SharedPtr cfg_val_get_all_;
+    rclcpp::Service<ublox_read_2::srv::CfgValDel>::SharedPtr cfg_val_del_;
+    rclcpp::Service<ublox_read_2::srv::CfgValSet>::SharedPtr cfg_val_set_;
+    rclcpp::Service<ublox_read_2::srv::CfgReset>::SharedPtr cfg_reset_;
+    rclcpp::Service<ublox_read_2::srv::InitModule>::SharedPtr init_module_;
+    rclcpp::Service<ublox_read_2::srv::GetVersion>::SharedPtr get_version_;
 
     uint32_t ecef_pos_tow_;
     uint32_t ecef_vel_tow_;
@@ -144,21 +141,18 @@ private:
     bool arrow_flag = false;
     double arrow[7];
 
-    ros::Subscriber sub1;
-    ros::Subscriber sub2;
+    rclcpp::Subscription<ublox_read_2::msg::RelPos>::SharedPtr sub1;
+    rclcpp::Subscription<ublox_read_2::msg::RelPos>::SharedPtr sub2;
 
-    ublox::PosVelEcef ecef_msg_;
-    ublox::PosVelEcef base_ecef_msg_;
-    ublox::PosVelEcef *ecef_ptr_;
+    ublox_read_2::msg::PosVelEcef ecef_msg_;
+    ublox_read_2::msg::PosVelEcef base_ecef_msg_;
+    ublox_read_2::msg::PosVelEcef *ecef_ptr_;
 
-    ublox::PositionVelocityTime pvt_msg_;
-    ublox::PositionVelocityTime base_pvt_msg_;
-    ublox::PositionVelocityTime *pvt_ptr_;
+    ublox_read_2::msg::PositionVelocityTime pvt_msg_;
+    ublox_read_2::msg::PositionVelocityTime base_pvt_msg_;
+    ublox_read_2::msg::PositionVelocityTime *pvt_ptr_;
 
-    ublox::RelPosFlags relpos_flag_msg_;
-
-    void cb_rov1(const ublox::RelPos &msg);
-    void cb_rov2(const ublox::RelPos &msg);
+    ublox_read_2::msg::RelPosFlags relpos_flag_msg_;
 
     void initBase();
     void initRover();

@@ -4,26 +4,26 @@ namespace ublox_ros
 {
     void UBLOX_ROS::advertiseTopics()
     {
-        pvt_pub_ = nh_.advertise<ublox::PositionVelocityTime>("PosVelTime", 10);
-        relpos_pub_ = nh_.advertise<ublox::RelPos>("RelPos", 10);
-        relposflag_pub_ = nh_.advertise<ublox::RelPosFlags>("RelPosFlags", 10);
-        ecef_pub_ = nh_.advertise<ublox::PosVelEcef>("PosVelEcef", 10);
-        survey_status_pub_ = nh_.advertise<ublox::SurveyStatus>("SurveyStatus", 10);
-        eph_pub_ = nh_.advertise<ublox::Ephemeris>("Ephemeris", 10);
-        geph_pub_ = nh_.advertise<ublox::GlonassEphemeris>("GlonassEphemeris", 10);
-        obs_pub_ = nh_.advertise<ublox::ObsVec>("Obs", 10);
-        base_ecef_pub_ = nh_.advertise<ublox::PosVelEcef>("base/PosVelEcef", 10);
-        base_pvt_pub_ = nh_.advertise<ublox::PositionVelocityTime>("base/PosVelTime", 10);
-        rtcm_input_pub_ = nh_.advertise<ublox::RTCMInput>("RTCMInput", 10);
-        sat_status_pub_ = nh_.advertise<ublox::SatelliteStatus>("SatelliteStatus", 10);
-        // nav_sat_fix_pub_ = nh_.advertise<sensor_msgs::NavSatFix>("NavSatFix");
-        // nav_sat_status_pub_ = nh_.advertise<sensor_msgs::NavSatStatus>("NavSatStatus");
+        pvt_pub_ = this->create_publisher<ublox_read_2::msg::PositionVelocityTime>("PosVelTime", 10);
+        relpos_pub_ = this->create_publisher<ublox_read_2::msg::RelPos>("RelPos", 10);
+        relposflag_pub_ = this->create_publisher<ublox_read_2::msg::RelPosFlags>("RelPosFlags", 10);
+        ecef_pub_ = this->create_publisher<ublox_read_2::msg::PosVelEcef>("PosVelEcef", 10);
+        survey_status_pub_ = this->create_publisher<ublox_read_2::msg::SurveyStatus>("SurveyStatus", 10);
+        eph_pub_ = this->create_publisher<ublox_read_2::msg::Ephemeris>("Ephemeris", 10);
+        geph_pub_ = this->create_publisher<ublox_read_2::msg::GlonassEphemeris>("GlonassEphemeris", 10);
+        obs_pub_ = this->create_publisher<ublox_read_2::msg::ObsVec>("Obs", 10);
+        base_ecef_pub_ = this->create_publisher<ublox_read_2::msg::PosVelEcef>("base/PosVelEcef", 10);
+        base_pvt_pub_ = this->create_publisher<ublox_read_2::msg::PositionVelocityTime>("base/PosVelTime", 10);
+        rtcm_input_pub_ = this->create_publisher<ublox_read_2::msg::RTCMInput>("RTCMInput", 10);
+        sat_status_pub_ = this->create_publisher<ublox_read_2::msg::SatelliteStatus>("SatelliteStatus", 10);
+        // nav_sat_fix_pub_ = this->create_publisher<sensor_msgs::NavSatFix>("NavSatFix");
+        // nav_sat_status_pub_ = this->create_publisher<sensor_msgs::NavSatStatus>("NavSatStatus");
     }
     
     // Callback function for subscriber to RelPos for a given RelPos message.
 // NOTE: This message is not the same as ublox::NAV_RELPOSNED_t, since that one
 // deals with messages from the f9p
-void UBLOX_ROS::cb_rov1(const ublox::RelPos &msg) {
+void UBLOX_ROS::cb_rov1(const ublox_read_2::msg::RelPos &msg) {
     ned_1[0] = msg.relPosNED[0];  //North
     ned_1[1] = msg.relPosNED[1];  //East
     ned_1[2] = msg.relPosNED[2];  //Down
@@ -32,7 +32,7 @@ void UBLOX_ROS::cb_rov1(const ublox::RelPos &msg) {
 // Callback function for subscriber to second RelPos.
 // NOTE: This message is not the same as ublox::NAV_RELPOSNED_t, since that one
 // deals with messages from the f9p
-void UBLOX_ROS::cb_rov2(const ublox::RelPos &msg) {
+void UBLOX_ROS::cb_rov2(const ublox_read_2::msg::RelPos &msg) {
     ned_2[0] = msg.relPosNED[0];  //North
     ned_2[1] = msg.relPosNED[1];  //East
     ned_2[2] = msg.relPosNED[2];  //Down

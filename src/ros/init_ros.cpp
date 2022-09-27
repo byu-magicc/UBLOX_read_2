@@ -7,9 +7,17 @@ namespace ublox_ros
         std::cerr<<"Initializing Base\n";
 
         //Get base parameters
-        std::string base_type = nh_private_.param<std::string>("base_type", "moving");
-        int surveytime = nh_private_.param<int>("Surveytime", 120); //Stationary base survey time
-        int surveyacc = nh_private_.param<int>("Surveyacc", 500000);  //Stationary base accuracy
+        this->declare_parameter<std::string>("base_type", "moving");
+        this->declare_parameter<int>("Surveytime", 120);
+        this->declare_parameter<int>("Surveyacc", 500000);
+
+        std::string base_type;
+        int surveytime;
+        int surveyacc;
+
+        this->get_parameter<std::string>("base_type", base_type);
+        this->get_parameter<int>("Surveytime", surveytime); //Stationary base survey time
+        this->get_parameter<int>("Surveyacc", surveyacc); //Stationary base accuracy
         std::cerr << "base_type = " << base_type << "\n";
         std::cerr << "surveytime = " << surveytime << "\n";
         std::cerr << "surveyacc = " << surveyacc << "\n";

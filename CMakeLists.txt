@@ -97,9 +97,8 @@ if (${BUILD_ROS})
   ament_export_dependencies(std_msgs rosidl_default_runtime message_runtime)
 	
 
-  add_executable(ublox_ros src/ros/ublox_ros.cpp) 
-  ament_target_dependencies(ublox_ros std_msgs)
-	# 	src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp)
+  add_executable(ublox_ros src/ros/ublox_node.cpp src/ros/ublox_ros.cpp src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp) 
+  ament_target_dependencies(ublox_ros std_msgs sensor_msgs)
 
   rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
 

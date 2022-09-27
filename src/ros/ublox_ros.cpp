@@ -10,9 +10,7 @@
 namespace ublox_ros
 {
 
-UBLOX_ROS::UBLOX_ROS() :
-    nh_(), nh_private_("~")
-{
+UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
 
     // Connect ROS topics
     advertiseTopics();
@@ -21,17 +19,30 @@ UBLOX_ROS::UBLOX_ROS() :
     advertiseServices();
 
     //Get the serial port
-    serial_port_ = nh_private_.param<std::string>("serial_port", "/dev/ttyACM0");
-    log_filename_ = nh_private_.param<std::string>("log_filename", "");
-    message_rate_ = nh_private_.param<int>("message_rate", 10); //rate at which GNSS measurements are taken in hz
-    rover_quantity_ = nh_private_.param<int>("rover_quantity", 0);
+    this->declare_parameter<std::string>("serial_port", "/dev/ttyACM0");
+    this->declare_parameter<std::string>("serial_port", "/dev/ttyACM0");
+    this->declare_parameter<std::string>("log_filename", "");
+    this->declare_parameter<int>("message_rate", 10); //rate at which GNSS measurements are taken in hz
+    this->declare_parameter<int>("rover_quantity", 0);
+    
+    this->get_parameter<std::string>("serial_port", serial_port_);
+    this->get_parameter<std::string>("log_filename", log_filename_);
+    this->get_parameter<int>("message_rate", message_rate_); //rate at which GNSS measurements are taken in hz
+    this->get_parameter<int>("rover_quantity", rover_quantity_);
     
     // Get Constallation settings
-    gps_ = nh_private_.param<int>("GPS", 1); //GPS
-    glonas_ = nh_private_.param<int>("GLONAS", 0); //GLONAS
-    beidou_ = nh_private_.param<int>("BEIDOU", 0); //BEIDOU
-    galileo_ = nh_private_.param<int>("GALILEO", 1); //GALILEO
-    dynamic_model_ = nh_private_.param<int>("dynamic_model", 0);
+    this->declare_parameter<int>("GPS", 1);
+    this->declare_parameter<int>("GLONAS", 0);
+    this->declare_parameter<int>("BEIDOU", 0);
+    this->declare_parameter<int>("GALILEO", 1);
+    this->declare_parameter<int>("dynamic_model", 0);
+
+    this->get_parameter<std::string>("GPS", gps_);
+    this->get_parameter<std::string>("GLONAS", glonas_);
+    this->get_parameter<std::string>("BEIDOU", beidou_);
+    this->get_parameter<std::string>("GALILEO", galileo_);
+    this->get_parameter<std::string>("dynamic_model", dynamic_model_);
+    
     std::cerr << "message_rate = " << message_rate_ << "\n";
     std::cerr << "rover_quantity = " << rover_quantity_ << "\n";
     std::cerr << "gps = " << gps_ << "\n";
@@ -48,6 +59,8 @@ UBLOX_ROS::UBLOX_ROS() :
 
     // set up RTK
     // Base (n local_host n local_port, n rover_host, n rover_port)
+    
+
     if(nh_private_.param<bool>("debug", false))
     {
         std::cerr<<"DEBUG MODE\n";
@@ -144,15 +157,4 @@ bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
     }
 }
 
-}
-
-
-
-int main(int argc, char** argv)
-{
-    ros::init(argc, argv, "ublox_ros");
-
-    ublox_ros::UBLOX_ROS Thing;
-
-    ros::spin();
 }
