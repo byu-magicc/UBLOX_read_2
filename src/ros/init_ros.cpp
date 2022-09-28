@@ -33,14 +33,21 @@ namespace ublox_ros
         
         //Account for the case when no numbers are used for the first rover.
         uint8_t j = 0;
-        if(nh_private_.hasParam("local_host")) {
+        if(this->has_parameter("local_host")) {
             //The first local host corresponds to the first rover.
-            local_host[0] = nh_private_.param<std::string>("local_host", "localhost");
-            local_port[0] = nh_private_.param<int>("local_port", 16140);
+            this->declare_parameter<std::string>("local_host", "localhost");
+            this->declare_parameter<int>("local_port", 16140);
+
+            this->get_parameter<std::string>("local_host", local_host[0]);
+            this->get_parameter<int>("local_port", local_port[0]);
+            
             
             //First rover
-            rover_host[0] = nh_private_.param<std::string>("rover_host", "localhost");
-            rover_port[0] = nh_private_.param<int>("rover_port", 16145);
+            this->declare_parameter<std::string>("rover_host", "localhost");
+            this->declare_parameter<int>("rover_port", 16145);
+
+            this->get_parameter<std::string>("rover_host", rover_host[0]);
+            this->get_parameter<int>("rover_port", rover_port[0]);
 
             //Let the program know that we have inputted the first rover.
             j=1;

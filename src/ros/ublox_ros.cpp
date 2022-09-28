@@ -20,7 +20,6 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
 
     //Get the serial port
     this->declare_parameter<std::string>("serial_port", "/dev/ttyACM0");
-    this->declare_parameter<std::string>("serial_port", "/dev/ttyACM0");
     this->declare_parameter<std::string>("log_filename", "");
     this->declare_parameter<int>("message_rate", 10); //rate at which GNSS measurements are taken in hz
     this->declare_parameter<int>("rover_quantity", 0);
@@ -37,11 +36,11 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     this->declare_parameter<int>("GALILEO", 1);
     this->declare_parameter<int>("dynamic_model", 0);
 
-    this->get_parameter<std::string>("GPS", gps_);
-    this->get_parameter<std::string>("GLONAS", glonas_);
-    this->get_parameter<std::string>("BEIDOU", beidou_);
-    this->get_parameter<std::string>("GALILEO", galileo_);
-    this->get_parameter<std::string>("dynamic_model", dynamic_model_);
+    this->get_parameter<int>("GPS", gps_);
+    this->get_parameter<int>("GLONAS", glonas_);
+    this->get_parameter<int>("BEIDOU", beidou_);
+    this->get_parameter<int>("GALILEO", galileo_);
+    this->get_parameter<uint8_t>("dynamic_model", dynamic_model_);
     
     std::cerr << "message_rate = " << message_rate_ << "\n";
     std::cerr << "rover_quantity = " << rover_quantity_ << "\n";
