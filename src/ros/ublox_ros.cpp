@@ -18,23 +18,55 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     // Connect ROS services
     advertiseServices();
 
-    //Get the serial port
-    this->declare_parameter<std::string>("serial_port", "/dev/ttyACM0");
-    this->declare_parameter<std::string>("log_filename", "");
-    this->declare_parameter<int>("message_rate", 10); //rate at which GNSS measurements are taken in hz
-    this->declare_parameter<int>("rover_quantity", 0);
+    // declare parameters
+
+    this->declare_parameter<std::string>("base_type", "moving");
+    this->declare_parameter<int>("Surveytime", 120);
+    this->declare_parameter<int>("Surveyacc", 500000);
+    this->declare_parameter<std::string>("local_host", "localhost");
+    this->declare_parameter<uint16_t>("local_port", 16140);
+    this->declare_parameter<std::string>("rover_host", "");
+    this->declare_parameter<uint16_t>("rover_port", 16145);
+    this->declare_parameter<std::string>("base_host", "");
+    this->declare_parameter<int>("base_port", 16145);
+    this->declare_parameter<std::string>("local_host1", "localhost");
+    this->declare_parameter<uint16_t>("local_port1", 16140);
+    this->declare_parameter<std::string>("base_host1", "localhost");
+    this->declare_parameter<int>("base_port1", 16145);
+
+    std::map<std::string, std::string> string_params;
+    std::map<std::string, int> int_params;
+
+    string_params["arrowbase"] = "";
+    string_params["arrowtip"]= "";
+    string_params["serial_port"] = "/dev/ttyACM0";
+    string_params["log_filename"] = "";
+
+    int_params["message_rate"] = 10; //rate at which GNSS measurements are taken in hz
+    int_params["rover_quantity"] = 0;
+    int_params["GPS"] = 1;
+    int_params["GLONAS"] = 0;
+    int_params["BEIDOU"] = 0;
+    int_params["GALILEO"] = 1;
+    int_params["dynamic_model"] = 0;
+
     
+    this->declare_parameters("", string_params);
+    this->declare_parameters("", int_params);
+
+    this->declare_parameter<bool>("debug", false);
+
+    
+    //Get the serial port
+
+
     this->get_parameter<std::string>("serial_port", serial_port_);
     this->get_parameter<std::string>("log_filename", log_filename_);
     this->get_parameter<int>("message_rate", message_rate_); //rate at which GNSS measurements are taken in hz
     this->get_parameter<int>("rover_quantity", rover_quantity_);
     
     // Get Constallation settings
-    this->declare_parameter<int>("GPS", 1);
-    this->declare_parameter<int>("GLONAS", 0);
-    this->declare_parameter<int>("BEIDOU", 0);
-    this->declare_parameter<int>("GALILEO", 1);
-    this->declare_parameter<int>("dynamic_model", 0);
+    
 
     this->get_parameter<int>("GPS", gps_);
     this->get_parameter<int>("GLONAS", glonas_);
@@ -59,22 +91,32 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     // set up RTK
     // Base (n local_host n local_port, n rover_host, n rover_port)
     
+    bool debug_param;
+    this->get_parameter<bool>("debug", debug_param);
 
-    if(nh_private_.param<bool>("debug", false))
+    std::string base_host_param;
+    std::string rover_host_param;
+
+    this->get_parameter<std::string>("base_host", base_host_param);
+    this->get_parameter<std::string>("rover_host", rover_host_param);
+
+    // set up RTK
+    // Base (n local_host n local_port, n rover_host, n rover_port)
+    if(debug_param)
     {
         std::cerr<<"DEBUG MODE\n";
     }
-    else if (!nh_private_.hasParam("base_host"))
+    else if (base_host_param == "")
     {
         initBase();
     }
     // Rover(1 local_host 1 local_port 1 base_host 1 base_port)
-    else if (!nh_private_.hasParam("rover_host"))
+    else if (rover_host_param == "")
     {
         initRover();
     }
     // Brover(1 base_host 1 base_port n local_host n local_port n rover_host n rover_port)
-    else if (nh_private_.hasParam("base_host") && nh_private_.hasParam("rover_host")) 
+    else if (base_host_param != "" && rover_host_param != "") 
     {
         initBrover();
     }
@@ -83,26 +125,27 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
         std::cerr<<"Could not deduce base, rover, or brover\n";
     }
     
+    // TODO: implement this chunck of code into ROS2
+    // // Check if there is a arrow
+    // if (nh_private_.hasParam("arrowbase") && nh_private_.hasParam("arrowtip")) {
 
-    // Check if there is a arrow
-    if (nh_private_.hasParam("arrowbase") && nh_private_.hasParam("arrowtip")) {
+    //   // If there is an arrow , then we need to subscribe to the base
+    //   std::string arrowbase = nh_private_.param<std::string>("arrowbase", "/brover");
+    //   // and tip of the arrow for /RelPos
+    //   std::string arrowtip = nh_private_.param<std::string>("arrowtip", "/rover");
 
-      // If there is an arrow , then we need to subscribe to the base
-      std::string arrowbase = nh_private_.param<std::string>("arrowbase", "/brover");
-      // and tip of the arrow for /RelPos
-      std::string arrowtip = nh_private_.param<std::string>("arrowtip", "/rover");
+    //   // Call the first subscriber
+    //   sub1 = nh_.subscribe(arrowbase+"/RelPos", 10, &UBLOX_ROS::cb_rov1, this);
 
-      // Call the first subscriber
-      sub1 = nh_.subscribe(arrowbase+"/RelPos", 10, &UBLOX_ROS::cb_rov1, this);
+    //   // Call the second subscriber
+    //   sub2 = nh_.subscribe(arrowtip+"/RelPos", 10, &UBLOX_ROS::cb_rov2, this);
 
-      // Call the second subscriber
-      sub2 = nh_.subscribe(arrowtip+"/RelPos", 10, &UBLOX_ROS::cb_rov2, this);
+    //   // Make the arrow flag true. This flag is used in the relposCB function in
+    //   // in order to determine if the vector math function needs to be called or
+    //   // not.
+    //   arrow_flag = true;
+    // }
 
-      // Make the arrow flag true. This flag is used in the relposCB function in
-      // in order to determine if the vector math function needs to be called or
-      // not.
-      arrow_flag = true;
-    }
 
     // connect callbacks
     createCallback(ublox::CLASS_NAV, ublox::NAV_RELPOSNED, &UBLOX_ROS::relposCB, this);

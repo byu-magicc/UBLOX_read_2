@@ -154,6 +154,9 @@ private:
 
     ublox_read_2::msg::RelPosFlags relpos_flag_msg_;
 
+    void cb_rov1(const ublox_read_2::msg::RelPos &msg);
+    void cb_rov2(const ublox_read_2::msg::RelPos &msg);
+
     void initBase();
     void initRover();
     void initBrover();
@@ -180,7 +183,7 @@ private:
 
             this->ublox_->registerUBXCallback(cls, type, trampoline);
         } while (0);
-    };
+    }
 
     constexpr double deg2rad(double x) { return M_PI/180.0 * x; }
 

@@ -7,9 +7,7 @@ namespace ublox_ros
         std::cerr<<"Initializing Base\n";
 
         //Get base parameters
-        this->declare_parameter<std::string>("base_type", "moving");
-        this->declare_parameter<int>("Surveytime", 120);
-        this->declare_parameter<int>("Surveyacc", 500000);
+        
 
         std::string base_type;
         int surveytime;
@@ -33,31 +31,28 @@ namespace ublox_ros
         
         //Account for the case when no numbers are used for the first rover.
         uint8_t j = 0;
-        if(this->has_parameter("local_host")) {
-            //The first local host corresponds to the first rover.
-            this->declare_parameter<std::string>("local_host", "localhost");
-            this->declare_parameter<int>("local_port", 16140);
+        // if(nh_private_.hasParam("local_host")) {                 //TODO: add in this logic for ROS2 implementation
+        //The first local host corresponds to the first rover.
 
-            this->get_parameter<std::string>("local_host", local_host[0]);
-            this->get_parameter<int>("local_port", local_port[0]);
-            
-            
-            //First rover
-            this->declare_parameter<std::string>("rover_host", "localhost");
-            this->declare_parameter<int>("rover_port", 16145);
+        this->get_parameter<std::string>("local_host", local_host[0]);
+        this->get_parameter<uint16_t>("local_port", local_port[0]);
+        
+        
+        //First rover
+        
+        this->get_parameter<std::string>("rover_host", rover_host[0]);
+        this->get_parameter<uint16_t>("rover_port", rover_port[0]);
 
-            this->get_parameter<std::string>("rover_host", rover_host[0]);
-            this->get_parameter<int>("rover_port", rover_port[0]);
-
-            //Let the program know that we have inputted the first rover.
-            j=1;
-        }
+        //Let the program know that we have inputted the first rover.
+        j=1;
+        // }
 
         for(int i=1+j; i <= rover_quantity_; i++) {
-            local_host[i-1] = nh_private_.param<std::string>("local_host"+std::to_string(i), "localhost");
-            local_port[i-1] = nh_private_.param<int>("local_port"+std::to_string(i), 16140);
-            rover_host[i-1] = nh_private_.param<std::string>("rover_host"+std::to_string(i), "localhost");
-            rover_port[i-1] = nh_private_.param<int>("rover_port"+std::to_string(i), 16145);
+
+            this->get_parameter<std::string>("local_host"+std::to_string(i), local_host[i-1]);
+            this->get_parameter<uint16_t>("local_port"+std::to_string(i), local_port[i-1]);
+            this->get_parameter<std::string>("rover_host"+std::to_string(i), rover_host[i-1]);
+            this->get_parameter<uint16_t>("rover_port"+std::to_string(i), rover_port[i-1]);
         }
 
         ublox_->initBase(local_host, local_port, rover_host, rover_port,
@@ -77,19 +72,23 @@ namespace ublox_ros
         std::string* base_host = new std::string[1];
         uint16_t* base_port = new uint16_t[1];
 
-        if(nh_private_.hasParam("local_host")) {
-            std::string test = nh_private_.param<std::string>("local_host", "localhost");
-            local_host[0] = nh_private_.param<std::string>("local_host", "localhost");
-            local_port[0] = nh_private_.param<int>("local_port", 16140);
-            base_host[0] = nh_private_.param<std::string>("base_host", "localhost");
-            base_port[0] = nh_private_.param<int>("base_port", 16145);
-        }
-        else {
-          local_host[0] = nh_private_.param<std::string>("local_host1", "localhost");
-          local_port[0] = nh_private_.param<int>("local_port1", 16140);
-          base_host[0] = nh_private_.param<std::string>("base_host1", "localhost");
-          base_port[0] = nh_private_.param<int>("base_port1", 16145);
-        }
+        // if(nh_private_.hasParam("local_host")) { //TODO: add in this logic for ROS2 implementation
+        std::string test;
+
+        this->get_parameter<std::string>("local_host", std::string test);
+        this->get_parameter<std::string>("local_host", local_host[0]);
+        this->get_parameter<uint16_t>("local_port", local_port[0]);
+        this->get_parameter<std::string>("base_host", base_host[0]);
+        this->get_parameter<int>("base_port", base_port[0]);
+
+        // }
+        // else {
+
+        //     this->get_parameter<std::string>("local_host1", local_host[0]);
+        //     this->get_parameter<uint16_t>("local_port1", local_port[0]);
+        //     this->get_parameter<std::string>("base_host1", base_host[0]);
+        //     this->get_parameter<int>("base_port1", base_port[0]);
+        // }
 
         ublox_->initRover(local_host[0], local_port[0], base_host[0], base_port[0], constellation_, dynamic_model_);
     }
@@ -112,31 +111,38 @@ namespace ublox_ros
         uint16_t* base_port = new uint16_t[1];
 
         // Fill base arrays with their single values
-        base_host[0] = nh_private_.param<std::string>("base_host", "localhost");
-        base_port[0] = nh_private_.param<int>("base_port", 16140);
+        this->declare_parameter<std::string>("base_host", "localhost");
+        this->declare_parameter<int>("base_port", 16140);
+
+        this->get_parameter<std::string>("base_host", base_host[0] );
+        this->get_parameter<int>("base_port", base_port[0]);
 
         uint8_t j = 0;
-        if(nh_private_.hasParam("local_host")) {
+        // if(nh_private_.hasParam("local_host")) { //TODO: add in this logic for ROS2 implementation
 
-            local_host[0] = nh_private_.param<std::string>("local_host", "localhost");
-            local_port[0] = nh_private_.param<int>("local_port", 16140);
-            rover_host[0] = nh_private_.param<std::string>("rover_host", "localhost");
-            rover_port[0] = nh_private_.param<int>("rover_port", 16145);
-            j=1;
-        }
+        this->get_parameter<std::string>("local_host", local_host[0]);
+        this->get_parameter<uint16_t>("local_port", local_port[0]);
+        this->get_parameter<std::string>("rover_host", rover_host[0]);
+        this->get_parameter<uint16_t>("rover_port", rover_port[0]);
+
+        j=1;
+        // }
 
         //Input parameters from xml file into respective arrays
         for(int i=1+j; i <= rover_quantity_; i++) {
-            local_host[i-1] = nh_private_.param<std::string>("local_host"+std::to_string(i), "localhost");
-            local_port[i-1] = nh_private_.param<int>("local_port"+std::to_string(i), 16140);
-            rover_host[i-1] = nh_private_.param<std::string>("rover_host"+std::to_string(i), "localhost");
-            rover_port[i-1] = nh_private_.param<int>("rover_port"+std::to_string(i), 16145);
+        
+            this->get_parameter<std::string>("local_host"+std::to_string(i), local_host[i-1]);
+            this->get_parameter<uint16_t>("local_port"+std::to_string(i), local_port[i-1]);
+            this->get_parameter<std::string>("rover_host"+std::to_string(i), rover_host[i-1]);
+            this->get_parameter<uint16_t>("rover_port"+std::to_string(i), rover_port[i-1] );
+
             j = i;
         }
 
         // Add in extra local host values.
-        local_host[j] = nh_private_.param<std::string>("local_host"+std::to_string(j+1), "localhost");
-        local_port[j] = nh_private_.param<int>("local_port"+std::to_string(j+1), 16140);
+
+        this->get_parameter<std::string>("local_host"+std::to_string(j+1), local_host[j]);
+        this->get_parameter<uint16_t>("local_port"+std::to_string(j+1), local_port[j]);
 
         //Determine whether the brover is moving or stationary?
         std::string base_type = "moving";

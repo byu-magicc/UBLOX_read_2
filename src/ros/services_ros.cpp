@@ -51,8 +51,8 @@ namespace ublox_ros
             cfg_ros.version = cfgVector_ublox[i].version;
             cfg_ros.layer = cfgVector_ublox[i].layer;
             cfg_ros.position = cfgVector_ublox[i].position.position;
-            cfg_ros.keyID = cfgVector_ublox[i].cfgDataKey.keyID;
-            cfg_ros.keyName = std::string(cfgVector_ublox[i].keyName);
+            cfg_ros.key_id = cfgVector_ublox[i].cfgDataKey.keyID;
+            cfg_ros.keyname = std::string(cfgVector_ublox[i].keyName);
             cfg_ros.data = cfgVector_ublox[i].cfgData.data;
             
             res.cfgData.push_back(cfg_ros);

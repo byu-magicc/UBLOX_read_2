@@ -24,18 +24,18 @@ namespace ublox_ros
 // NOTE: This message is not the same as ublox::NAV_RELPOSNED_t, since that one
 // deals with messages from the f9p
 void UBLOX_ROS::cb_rov1(const ublox_read_2::msg::RelPos &msg) {
-    ned_1[0] = msg.relPosNED[0];  //North
-    ned_1[1] = msg.relPosNED[1];  //East
-    ned_1[2] = msg.relPosNED[2];  //Down
+    ned_1[0] = msg.rel_pos_ned[0];  //North
+    ned_1[1] = msg.rel_pos_ned[1];  //East
+    ned_1[2] = msg.rel_pos_ned[2];  //Down
 }
 
 // Callback function for subscriber to second RelPos.
 // NOTE: This message is not the same as ublox::NAV_RELPOSNED_t, since that one
 // deals with messages from the f9p
 void UBLOX_ROS::cb_rov2(const ublox_read_2::msg::RelPos &msg) {
-    ned_2[0] = msg.relPosNED[0];  //North
-    ned_2[1] = msg.relPosNED[1];  //East
-    ned_2[2] = msg.relPosNED[2];  //Down
+    ned_2[0] = msg.rel_pos_ned[0];  //North
+    ned_2[1] = msg.rel_pos_ned[1];  //East
+    ned_2[2] = msg.rel_pos_ned[2];  //Down
 }
 
 void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
@@ -46,7 +46,7 @@ void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 
     *pvt_tow_ptr_ = msg.iTOW;
     // out.iTOW = msg.iTow;
-    pvt_ptr_->header.stamp = ros::Time::now(); ///TODO: Do this right
+    pvt_ptr_->header.stamp = this->get_clock().now().to_msg(); ///TODO: Do this right
     pvt_ptr_->year = msg.year;
     pvt_ptr_->month = msg.month;
     pvt_ptr_->day = msg.day;
