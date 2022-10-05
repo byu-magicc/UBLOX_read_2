@@ -20,19 +20,10 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
 
     // declare parameters
 
-    this->declare_parameter<std::string>("base_type", "moving");
-    this->declare_parameter<int>("Surveytime", 120);
-    this->declare_parameter<int>("Surveyacc", 500000);
-    this->declare_parameter<std::string>("local_host", "localhost");
-    this->declare_parameter<uint16_t>("local_port", 16140);
-    this->declare_parameter<std::string>("rover_host", "");
-    this->declare_parameter<uint16_t>("rover_port", 16145);
-    this->declare_parameter<std::string>("base_host", "");
-    this->declare_parameter<int>("base_port", 16145);
-    this->declare_parameter<std::string>("local_host1", "localhost");
-    this->declare_parameter<uint16_t>("local_port1", 16140);
-    this->declare_parameter<std::string>("base_host1", "localhost");
-    this->declare_parameter<int>("base_port1", 16145);
+    
+    
+    
+
 
     std::map<std::string, std::string> string_params;
     std::map<std::string, int> int_params;
@@ -41,6 +32,12 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     string_params["arrowtip"]= "";
     string_params["serial_port"] = "/dev/ttyACM0";
     string_params["log_filename"] = "";
+    string_params["base_type"] = "moving";
+    string_params["local_host"] = "localhost";
+    string_params["rover_host"] = "";
+    string_params["base_host"] = "";
+    string_params["local_host1"] = "localhost";
+    string_params["base_host1"] = "localhost";
 
     int_params["message_rate"] = 10; //rate at which GNSS measurements are taken in hz
     int_params["rover_quantity"] = 0;
@@ -49,12 +46,20 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     int_params["BEIDOU"] = 0;
     int_params["GALILEO"] = 1;
     int_params["dynamic_model"] = 0;
+    int_params["Surveytime"] = 120;
+    int_params["Surveyacc"] = 500000;
+    int_params["base_port"] = 16145;
+    int_params["base_port1"] = 16145;
 
     
     this->declare_parameters("", string_params);
     this->declare_parameters("", int_params);
 
     this->declare_parameter<bool>("debug", false);
+
+    this->declare_parameter<uint16_t>("local_port1", 16140);
+    this->declare_parameter<uint16_t>("local_port", 16140);
+    this->declare_parameter<uint16_t>("rover_port", 16145);
 
     
     //Get the serial port

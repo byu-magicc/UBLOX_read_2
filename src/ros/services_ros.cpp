@@ -55,7 +55,7 @@ namespace ublox_ros
             cfg_ros.keyname = std::string(cfgVector_ublox[i].keyName);
             cfg_ros.data = cfgVector_ublox[i].cfgData.data;
             
-            res.cfgData.push_back(cfg_ros);
+            res.cfg_data.push_back(cfg_ros);
         }
         res.ack=std::get<0>(response).got_ack;
         res.nack=std::get<0>(response).got_nack;
@@ -71,15 +71,15 @@ namespace ublox_ros
         std::vector<ublox::CFG_VALGET_t::response_t> cfgVector_ublox = std::get<1>(response);
         for(int i=0; i<cfgVector_ublox.size(); i++)
         {
-            ublox_read_2::srv::CfgValGetType cfg_ros;
+            ublox_read_2::msg::CfgValGetType cfg_ros;
             cfg_ros.version = cfgVector_ublox[i].version;
             cfg_ros.layer = cfgVector_ublox[i].layer;
             cfg_ros.position = cfgVector_ublox[i].position.position;
-            cfg_ros.keyID = cfgVector_ublox[i].cfgDataKey.keyID;
-            cfg_ros.keyName = std::string(cfgVector_ublox[i].keyName);
+            cfg_ros.key_id = cfgVector_ublox[i].cfgDataKey.keyID;
+            cfg_ros.keyname = std::string(cfgVector_ublox[i].keyName);
             cfg_ros.data = cfgVector_ublox[i].cfgData.data;
             
-            res.cfgData.push_back(cfg_ros);
+            res.cfg_data.push_back(cfg_ros);
         }
         res.ack=std::get<0>(response).got_ack;
         res.nack=std::get<0>(response).got_nack;
@@ -94,8 +94,8 @@ namespace ublox_ros
 
         ublox::CFG_VAL_DBG_t response = ublox_->cfgValDel(0, req.layer, req.key);
 
-        res.got_Ack = response.got_ack;
-        res.got_Nack = response.got_nack;
+        res.got_ack = response.got_ack;
+        res.got_nack = response.got_nack;
 
         return true;
     }
@@ -104,17 +104,17 @@ namespace ublox_ros
 
     bool UBLOX_ROS::cfgValSet(ublox_read_2::srv::CfgValSet::Request &req, ublox_read_2::srv::CfgValSet::Response &res)
     {
-        ublox::CFG_VAL_DBG_t response = ublox_->cfgValSet(0, req.layer, req.cfgData, req.key);
+        ublox::CFG_VAL_DBG_t response = ublox_->cfgValSet(0, req.layer, req.cfg_data, req.key);
 
-        res.got_Ack = response.got_ack;
-        res.got_Nack = response.got_nack;
+        res.got_ack = response.got_ack;
+        res.got_nack = response.got_nack;
 
         return true;
     }
 
     bool UBLOX_ROS::cfgReset(ublox_read_2::srv::CfgReset::Request &req, ublox_read_2::srv::CfgReset::Response &res)
     {
-        ublox::navBbrMask_t bitfield =  ublox_->reset(req.navBbrMask, req.resetMode);
+        ublox::navBbrMask_t bitfield =  ublox_->reset(req.nav_bbr_mask, req.reset_mode);
 
         // std::cerr<<"eph: "<< bitfield.eph<<std::endl;
 
@@ -133,7 +133,7 @@ namespace ublox_ros
 
     }
 
-    bool UBLOX_ROS::initModule(ublox_read_2::srv::initModule::Request &req, ublox_read_2::srv::initModule::Response &res)
+    bool UBLOX_ROS::InitModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res)
     {
         switch(req.type)
         {

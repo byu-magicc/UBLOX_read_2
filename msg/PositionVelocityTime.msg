@@ -7,7 +7,7 @@ uint8 hour  	# h Hour of day, range 0..23 (UTC)
 uint8 min  	# min Minute of hour, range 0..59 (UTC)
 uint8 sec  	# s Seconds of minute, range 0..60 (UTC)
 int32 nano  	# ns Fraction of second, range -1e9 .. 1e9 (UTC)
-uint32 tacc  	# ns Time accuracy estimate (UTC)
+uint32 t_acc  	# ns Time accuracy estimate (UTC)
 
 uint8 valid  		# - Validity flags (see below )
 uint8 fix_type 	# - GNSSfix Type:

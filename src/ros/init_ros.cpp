@@ -75,11 +75,11 @@ namespace ublox_ros
         // if(nh_private_.hasParam("local_host")) { //TODO: add in this logic for ROS2 implementation
         std::string test;
 
-        this->get_parameter<std::string>("local_host", std::string test);
+        this->get_parameter<std::string>("local_host", test);
         this->get_parameter<std::string>("local_host", local_host[0]);
         this->get_parameter<uint16_t>("local_port", local_port[0]);
         this->get_parameter<std::string>("base_host", base_host[0]);
-        this->get_parameter<int>("base_port", base_port[0]);
+        this->get_parameter<uint16_t>("base_port", base_port[0]);
 
         // }
         // else {
@@ -115,7 +115,7 @@ namespace ublox_ros
         this->declare_parameter<int>("base_port", 16140);
 
         this->get_parameter<std::string>("base_host", base_host[0] );
-        this->get_parameter<int>("base_port", base_port[0]);
+        this->get_parameter<uint16_t>("base_port", base_port[0]);
 
         uint8_t j = 0;
         // if(nh_private_.hasParam("local_host")) { //TODO: add in this logic for ROS2 implementation

@@ -1,3 +1,6 @@
 [submodule "lib/async_comm"]
 	path = lib/async_comm
-	url = https://github.com/tpool2/async_comm.git
+	url = https://github.com/dpkoch/async_comm.git
+[submodule "lib/async_commrmdir"]
+	path = lib/async_commrmdir
+	url = https://github.com/dpkoch/async_comm.git

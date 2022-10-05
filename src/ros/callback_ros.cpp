@@ -46,7 +46,7 @@ void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 
     *pvt_tow_ptr_ = msg.iTOW;
     // out.iTOW = msg.iTow;
-    pvt_ptr_->header.stamp = this->get_clock().now().to_msg(); ///TODO: Do this right
+    pvt_ptr_->header.stamp = this->now(); ///TODO: Do this right
     pvt_ptr_->year = msg.year;
     pvt_ptr_->month = msg.month;
     pvt_ptr_->day = msg.day;
@@ -54,27 +54,27 @@ void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     pvt_ptr_->min = msg.min;
     pvt_ptr_->sec = msg.sec;
     pvt_ptr_->nano = msg.nano;
-    pvt_ptr_->tAcc = msg.tAcc;
+    pvt_ptr_->t_acc = msg.tAcc;
     pvt_ptr_->valid = msg.valid;
-    pvt_ptr_->fixType = msg.fixType;
+    pvt_ptr_->fix_type = msg.fixType;
     pvt_ptr_->flags = msg.flags;
     pvt_ptr_->flags2 = msg.flags2;
-    pvt_ptr_->numSV = msg.numSV;
+    pvt_ptr_->num_sv = msg.numSV;
     pvt_ptr_->lla[0] = msg.lat*1e-7;
     pvt_ptr_->lla[1] = msg.lon*1e-7;
     pvt_ptr_->lla[2] = msg.height*1e-3;
-    pvt_ptr_->hMSL = msg.hMSL*1e-3;
-    pvt_ptr_->hAcc = msg.hAcc*1e-3;
-    pvt_ptr_->vAcc = msg.vAcc*1e-3;
-    pvt_ptr_->velNED[0] = msg.velN*1e-3;
-    pvt_ptr_->velNED[1] = msg.velE*1e-3;
-    pvt_ptr_->velNED[2] = msg.velD*1e-3;
-    pvt_ptr_->gSpeed = msg.gSpeed*1e-3;
-    pvt_ptr_->headMot = msg.headMot*1e-5;
-    pvt_ptr_->sAcc = msg.sAcc*1e-3;
-    pvt_ptr_->headAcc = msg.headAcc*1e-5;
-    pvt_ptr_->pDOP = msg.pDOP*0.01;
-    pvt_ptr_->headVeh = msg.headVeh*1e-5;
+    pvt_ptr_->h_msl = msg.hMSL*1e-3;
+    pvt_ptr_->h_acc = msg.hAcc*1e-3;
+    pvt_ptr_->v_acc = msg.vAcc*1e-3;
+    pvt_ptr_->vel_ned[0] = msg.velN*1e-3;
+    pvt_ptr_->vel_ned[1] = msg.velE*1e-3;
+    pvt_ptr_->vel_ned[2] = msg.velD*1e-3;
+    pvt_ptr_->g_speed = msg.gSpeed*1e-3;
+    pvt_ptr_->head_mot = msg.headMot*1e-5;
+    pvt_ptr_->s_acc = msg.sAcc*1e-3;
+    pvt_ptr_->head_acc = msg.headAcc*1e-5;
+    pvt_ptr_->p_dop = msg.pDOP*0.01;
+    pvt_ptr_->head_veh = msg.headVeh*1e-5;
 
     pvt_pub_ptr_->publish(*pvt_ptr_);
 
