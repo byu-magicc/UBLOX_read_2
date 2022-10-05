@@ -179,20 +179,14 @@ bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
     switch(f9pID)
     {
         case 0:
-            ecef_ptr_= &ecef_msg_;
-            ecef_pub_ptr_ = &ecef_pub_;
             pvt_ptr_ = &pvt_msg_;
-            pvt_pub_ptr_ = &pvt_pub_;
             ecef_pos_tow_ptr_ = &ecef_pos_tow_;
             ecef_vel_tow_ptr_ = &ecef_vel_tow_;
             pvt_tow_ptr_ = &pvt_tow_;
             return true;
             break;
         case 1:
-            ecef_ptr_= &base_ecef_msg_;
-            ecef_pub_ptr_ = &base_ecef_pub_;
             pvt_ptr_ = &base_pvt_msg_;
-            pvt_pub_ptr_ = &base_pvt_pub_;
             ecef_pos_tow_ptr_ = &base_ecef_pos_tow_;
             ecef_vel_tow_ptr_ = &base_ecef_vel_tow_;
             pvt_tow_ptr_ = &base_pvt_tow_;

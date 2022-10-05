@@ -133,7 +133,7 @@ namespace ublox_ros
 
     }
 
-    bool UBLOX_ROS::InitModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res)
+    bool UBLOX_ROS::initModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res)
     {
         switch(req.type)
         {

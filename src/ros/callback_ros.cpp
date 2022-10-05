@@ -76,21 +76,21 @@ void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     pvt_ptr_->p_dop = msg.pDOP*0.01;
     pvt_ptr_->head_veh = msg.headVeh*1e-5;
 
-    pvt_pub_ptr_->publish(*pvt_ptr_);
+    pvt_pub_->publish(*pvt_ptr_);
 
-    ecef_ptr_->header.stamp = ros::Time::now();
-    ecef_ptr_->fix = pvt_ptr_->fixType;
+    ecef_ptr_->header.stamp = this->now();
+    ecef_ptr_->fix = pvt_ptr_->fix_type;
     ecef_ptr_->lla[0] = pvt_ptr_->lla[0];
     ecef_ptr_->lla[1] = pvt_ptr_->lla[1];
     ecef_ptr_->lla[2] = pvt_ptr_->lla[2];
-    ecef_ptr_->horizontal_accuracy = pvt_ptr_->hAcc;
-    ecef_ptr_->vertical_accuracy = pvt_ptr_->vAcc;
-    ecef_ptr_->speed_accuracy = pvt_ptr_->sAcc;
+    ecef_ptr_->horizontal_accuracy = pvt_ptr_->h_acc;
+    ecef_ptr_->vertical_accuracy = pvt_ptr_->v_acc;
+    ecef_ptr_->speed_accuracy = pvt_ptr_->s_acc;
 
     if (*ecef_pos_tow_ptr_ == *pvt_tow_ptr_ && 
         *ecef_pos_tow_ptr_ == *ecef_vel_tow_ptr_)
     {
-        ecef_pub_ptr_->publish(*ecef_ptr_);
+        ecef_pub_->publish(*ecef_ptr_);
     }
 }
 
@@ -102,26 +102,26 @@ void UBLOX_ROS::relposCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     ublox::NAV_RELPOSNED_t msg = ubx_msg.NAV_RELPOSNED;
     
     // Create the message to be outputted
-    ublox::RelPos out;
+    ublox_read_2::msg::RelPos out;
 
 
     // out.iTOW = msg.iTow*1e-3;
-    out.header.stamp = ros::Time::now(); /// TODO: do this right
-    out.refStationId = msg.refStationId;
-    out.relPosNED[0] = msg.relPosN*1e-2;
-    out.relPosNED[1] = msg.relPosE*1e-2;
-    out.relPosNED[2] = msg.relPosD*1e-2;
-    out.relPosLength = msg.relPosLength*1e-2;
-    out.relPosHeading = deg2rad(msg.relPosHeading*1e-5);
-    out.relPosHPNED[0] = msg.relPosHPN*1e-3*.1;
-    out.relPosHPNED[1] = msg.relPosHPE*1e-3*.1;
-    out.relPosHPNED[2] = msg.relPosHPD*1e-3*.1;
-    out.relPosHPLength = msg.relPosHPLength*1e-3*.1;
-    out.accNED[0] = msg.accN*1e-3*.1;
-    out.accNED[1] = msg.accE*1e-3*.1;
-    out.accNED[2] = msg.accD*1e-3*.1;
-    out.accLength = msg.accLength*1e-3*.1;
-    out.accHeading = deg2rad(msg.accHeading*1e-5);
+    out.header.stamp = this->now(); /// TODO: do this right
+    out.ref_station_id = msg.refStationId;
+    out.rel_pos_ned[0] = msg.relPosN*1e-2;
+    out.rel_pos_ned[1] = msg.relPosE*1e-2;
+    out.rel_pos_ned[2] = msg.relPosD*1e-2;
+    out.rel_pos_length = msg.relPosLength*1e-2;
+    out.rel_pos_heading = deg2rad(msg.relPosHeading*1e-5);
+    out.rel_pos_hp_ned[0] = msg.relPosHPN*1e-3*.1;
+    out.rel_pos_hp_ned[1] = msg.relPosHPE*1e-3*.1;
+    out.rel_pos_hp_ned[2] = msg.relPosHPD*1e-3*.1;
+    out.rel_pos_hp_length = msg.relPosHPLength*1e-3*.1;
+    out.acc_ned[0] = msg.accN*1e-3*.1;
+    out.acc_ned[1] = msg.accE*1e-3*.1;
+    out.acc_ned[2] = msg.accD*1e-3*.1;
+    out.acc_length = msg.accLength*1e-3*.1;
+    out.acc_heading = deg2rad(msg.accHeading*1e-5);
     out.flags = msg.flags.all_flags;
 
 
@@ -193,7 +193,7 @@ void UBLOX_ROS::posECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     if (*ecef_pos_tow_ptr_ == *pvt_tow_ptr_ && 
         *ecef_pos_tow_ptr_ == *ecef_vel_tow_ptr_)
     {
-        ecef_pub_ptr_->publish(*ecef_ptr_);
+        ecef_pub_->publish(*ecef_ptr_);
     }
 
 }
@@ -213,7 +213,7 @@ void UBLOX_ROS::velECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     if (*ecef_pos_tow_ptr_ == *pvt_tow_ptr_ && 
         *ecef_pos_tow_ptr_ == *ecef_vel_tow_ptr_)
     {
-        ecef_pub_ptr_->publish(*ecef_ptr_);
+        ecef_pub_->publish(*ecef_ptr_);
     }
 }
 
