@@ -98,12 +98,18 @@ if (${BUILD_ROS})
 	
 
   add_executable(ublox_ros src/ros/ublox_node.cpp src/ros/ublox_ros.cpp src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp) 
-  ament_target_dependencies(ublox_ros std_msgs sensor_msgs)
+  ament_target_dependencies(ublox_ros rclcpp std_msgs sensor_msgs)
 
   rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
   target_link_libraries(ublox_ros UBLOX)
   target_include_directories(ublox_ros PUBLIC ../../devel/include)
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 
   install(TARGETS
   ublox_ros

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="base_serial_port" default="/dev/ttyACM0"/>
+  <arg name="rover_serial_port" default="/dev/ttyACM1"/>
+  <arg name="base_host" default="localhost"/>
+  <arg name="rover_host" default="localhost"/>
+
+  <group ns="base">
+
+		<rosparam command="load" file="$(find ublox)/params/ublox.yaml"/>
+
+    <node name="f9p" pkg="ublox" type="ublox_ros">
+			<param name="serial_port" value="$(arg base_serial_port)"/>
+ 			<param name="local_host" value="$(arg base_host)"/>
+			<param name="local_port" value="16140"/>
+			<param name="rover_host" value="$(arg rover_host)"/>
+			<param name="rover_port" value="16145"/>
+      <param name="arrowbase" value="/base"/>
+      <param name="arrowtip" value="/rover"/>
+    </node>
+
+		<node pkg="rosbag" type="record" name="record" output="screen" args="-o ../data/rtk_tests/base --all"/>
+  
+  </group>
+
+  <group ns="rover">
+
+    <rosparam command="load" file="$(find ublox)/params/ublox.yaml"/>
+		<param name="rover_quantity" value="0"/>
+
+    <node name="f9p" pkg="ublox" type="ublox_ros">
+			<param name="serial_port" value="$(arg rover_serial_port)"/>
+ 			<param name="local_host" value="$(arg rover_host)"/>
+			<param name="local_port" value="16145"/>
+			<param name="rover_host" value="$(arg base_host)"/>
+			<param name="rover_port" value="16140"/>
+      <param name="arrowbase" value="/base"/>
+      <param name="arrowtip" value="/rover"/>
+    </node>
+
+ 		<node pkg="rosbag" type="record" name="record" output="screen" args="-o ../data/rtk_tests/rover -- all"/>
+
+  </group>
+  
+</launch>

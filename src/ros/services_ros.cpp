@@ -5,27 +5,27 @@ namespace ublox_ros
 {
     void UBLOX_ROS::advertiseServices()
     {
-        cfg_val_get_ = this->create_service<ublox_read_2::srv::CfgValGet>("CfgValGet", this);
-        cfg_val_get_all_ = this->create_service<ublox_read_2::srv::CfgValGetAll>("CfgValGetAll", this);
-        cfg_val_del_ = this->create_service<ublox_read_2::srv::CfgValDel>("CfgValDel", this);
-        cfg_val_set_ = this->create_service<ublox_read_2::srv::CfgValSet>("CfgValSet", this);
-        cfg_reset_ = this->create_service<ublox_read_2::srv::CfgReset>("CfgReset", this);
-        init_module_ = this->create_service<ublox_read_2::srv::InitModule>("InitModule", this);
-        get_version_ = this->create_service<ublox_read_2::srv::GetVersion>("GetVersion", this);
+        cfg_val_get_ = this->create_service<ublox_read_2::srv::CfgValGet>("CfgValGet", std::bind(&UBLOX_ROS::cfgValGet, this, std::placeholders::_1, std::placeholders::_2));
+        cfg_val_get_all_ = this->create_service<ublox_read_2::srv::CfgValGetAll>("CfgValGetAll", std::bind(&UBLOX_ROS::cfgValGetAll, this, std::placeholders::_1, std::placeholders::_2));
+        cfg_val_del_ = this->create_service<ublox_read_2::srv::CfgValDel>("CfgValDel", std::bind(&UBLOX_ROS::cfgValDel, this, std::placeholders::_1, std::placeholders::_2));
+        cfg_val_set_ = this->create_service<ublox_read_2::srv::CfgValSet>("CfgValSet", std::bind(&UBLOX_ROS::cfgValSet, this, std::placeholders::_1, std::placeholders::_2));
+        cfg_reset_ = this->create_service<ublox_read_2::srv::CfgReset>("CfgReset", std::bind(&UBLOX_ROS::cfgReset, this, std::placeholders::_1, std::placeholders::_2));
+        init_module_ = this->create_service<ublox_read_2::srv::InitModule>("InitModule", std::bind(&UBLOX_ROS::initModule, this, std::placeholders::_1, std::placeholders::_2));
+        get_version_ = this->create_service<ublox_read_2::srv::GetVersion>("GetVersion", std::bind(&UBLOX_ROS::getVersion, this, std::placeholders::_1, std::placeholders::_2));
     }
 
-    bool UBLOX_ROS::getVersion(ublox_read_2::srv::GetVersion::Request &req, ublox_read_2::srv::GetVersion::Response &res)
+    void UBLOX_ROS::getVersion(const std::shared_ptr<ublox_read_2::srv::GetVersion::Request> req, std::shared_ptr<ublox_read_2::srv::GetVersion::Response> res)
     {
         ublox::MON_VER_t mon_ver = ublox_->getVersion();
 
         for(uint8_t i=0; i<30 && mon_ver.swVersion[i]!='\0'; i++)
         {
-            res.software_version.push_back(mon_ver.swVersion[i]);
+            res->software_version.push_back(mon_ver.swVersion[i]);
         }
 
         for(int i=0; i<30 && mon_ver.hwVersion[i]!='\0'; i++)
         {
-            res.hardware_version.push_back(mon_ver.hwVersion[i]);
+            res->hardware_version.push_back(mon_ver.hwVersion[i]);
         }
 
         for(uint8_t i=0; i<10 && mon_ver.extension[i][0]!='\0'; i++)
@@ -36,14 +36,21 @@ namespace ublox_ros
                 std::cerr<<mon_ver.extension[i][j];
                 extend.push_back(mon_ver.extension[i][j]);
             }
-            res.extension.push_back(extend);
+            res->extension.push_back(extend);
         }
-        return true;
     }
+
+    // void add(const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request, std::shared_ptr<example_interfaces::srv::AddTwoInts::Response>      response)
+    // {
+    // response->sum = request->a + request->b;
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Incoming request\na: %ld" " b: %ld",
+    //                 request->a, request->b);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "sending back response: [%ld]", (long int)response->sum);
+    // }
     
-    bool UBLOX_ROS::cfgValGet(ublox_read_2::srv::CfgValGet::Request &req, ublox_read_2::srv::CfgValGet::Response &res)
+    void UBLOX_ROS::cfgValGet(const std::shared_ptr<ublox_read_2::srv::CfgValGet::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValGet::Response> res)
     {
-        ublox::CFG_VALGET_TUPLE_t response = ublox_->cfgValGet(req.key, req.layer, req.position, req.filepath);
+        ublox::CFG_VALGET_TUPLE_t response = ublox_->CfgValGet(req->key, req->layer, req->position, req->filepath);
         std::vector<ublox::CFG_VALGET_t::response_t> cfgVector_ublox = std::get<1>(response);
         for(int i=0; i<cfgVector_ublox.size(); i++)
         {
@@ -55,19 +62,17 @@ namespace ublox_ros
             cfg_ros.keyname = std::string(cfgVector_ublox[i].keyName);
             cfg_ros.data = cfgVector_ublox[i].cfgData.data;
             
-            res.cfg_data.push_back(cfg_ros);
+            res->cfg_data.push_back(cfg_ros);
         }
-        res.ack=std::get<0>(response).got_ack;
-        res.nack=std::get<0>(response).got_nack;
-        res.gotcfg=std::get<0>(response).got_cfg_val;
-        res.flags=std::get<0>(response).flags;
-
-        return true;
+        res->ack=std::get<0>(response).got_ack;
+        res->nack=std::get<0>(response).got_nack;
+        res->gotcfg=std::get<0>(response).got_cfg_val;
+        res->flags=std::get<0>(response).flags;
     }
 
-    bool UBLOX_ROS::cfgValGetAll(ublox_read_2::srv::CfgValGetAll::Request &req, ublox_read_2::srv::CfgValGetAll::Response &res)
+    void UBLOX_ROS::cfgValGetAll(const std::shared_ptr<ublox_read_2::srv::CfgValGetAll::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValGetAll::Response> res)
     {
-        ublox::CFG_VALGET_TUPLE_t response = ublox_->cfgValGet(0x0fff0000, req.layer, req.position, req.filepath);
+        ublox::CFG_VALGET_TUPLE_t response = ublox_->CfgValGet(0x0fff0000, req->layer, req->position, req->filepath);
         std::vector<ublox::CFG_VALGET_t::response_t> cfgVector_ublox = std::get<1>(response);
         for(int i=0; i<cfgVector_ublox.size(); i++)
         {
@@ -79,63 +84,54 @@ namespace ublox_ros
             cfg_ros.keyname = std::string(cfgVector_ublox[i].keyName);
             cfg_ros.data = cfgVector_ublox[i].cfgData.data;
             
-            res.cfg_data.push_back(cfg_ros);
+            res->cfg_data.push_back(cfg_ros);
         }
-        res.ack=std::get<0>(response).got_ack;
-        res.nack=std::get<0>(response).got_nack;
-        res.gotcfg=std::get<0>(response).got_cfg_val;
-        res.flags=std::get<0>(response).flags;
-
-        return true;
+        res->ack=std::get<0>(response).got_ack;
+        res->nack=std::get<0>(response).got_nack;
+        res->gotcfg=std::get<0>(response).got_cfg_val;
+        res->flags=std::get<0>(response).flags;
     }
 
-    bool UBLOX_ROS::cfgValDel(ublox_read_2::srv::CfgValDel::Request &req, ublox_read_2::srv::CfgValDel::Response &res)
+    void UBLOX_ROS::cfgValDel(const std::shared_ptr<ublox_read_2::srv::CfgValDel::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValDel::Response> res)
     {
 
-        ublox::CFG_VAL_DBG_t response = ublox_->cfgValDel(0, req.layer, req.key);
+        ublox::CFG_VAL_DBG_t response = ublox_->CfgValDel(0, req->layer, req->key);
 
-        res.got_ack = response.got_ack;
-        res.got_nack = response.got_nack;
-
-        return true;
+        res->got_ack = response.got_ack;
+        res->got_nack = response.got_nack;
     }
 
 
 
-    bool UBLOX_ROS::cfgValSet(ublox_read_2::srv::CfgValSet::Request &req, ublox_read_2::srv::CfgValSet::Response &res)
+    void UBLOX_ROS::cfgValSet(const std::shared_ptr<ublox_read_2::srv::CfgValSet::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValSet::Response> res)
     {
-        ublox::CFG_VAL_DBG_t response = ublox_->cfgValSet(0, req.layer, req.cfg_data, req.key);
+        ublox::CFG_VAL_DBG_t response = ublox_->CfgValSet(0, req->layer, req->cfg_data, req->key);
 
-        res.got_ack = response.got_ack;
-        res.got_nack = response.got_nack;
-
-        return true;
+        res->got_ack = response.got_ack;
+        res->got_nack = response.got_nack;
     }
 
-    bool UBLOX_ROS::cfgReset(ublox_read_2::srv::CfgReset::Request &req, ublox_read_2::srv::CfgReset::Response &res)
+    void UBLOX_ROS::cfgReset(const std::shared_ptr<ublox_read_2::srv::CfgReset::Request> req, std::shared_ptr<ublox_read_2::srv::CfgReset::Response> res)
     {
-        ublox::navBbrMask_t bitfield =  ublox_->reset(req.nav_bbr_mask, req.reset_mode);
+        ublox::navBbrMask_t bitfield =  ublox_->reset(req->nav_bbr_mask, req->reset_mode);
 
         // std::cerr<<"eph: "<< bitfield.eph<<std::endl;
 
-        res.eph = bitfield.eph;
-        res.alm = bitfield.alm;
-        res.health = bitfield.health;
-        res.klob = bitfield.klob;
-        res.pos = bitfield.pos;
-        res.clkd = bitfield.clkd;
-        res.osc = bitfield.osc;
-        res.utc = bitfield.utc;
-        res.rtc = bitfield.rtc;
-        res.aop = bitfield.aop;
-
-        return true;
-
+        res->eph = bitfield.eph;
+        res->alm = bitfield.alm;
+        res->health = bitfield.health;
+        res->klob = bitfield.klob;
+        res->pos = bitfield.pos;
+        res->clkd = bitfield.clkd;
+        res->osc = bitfield.osc;
+        res->utc = bitfield.utc;
+        res->rtc = bitfield.rtc;
+        res->aop = bitfield.aop;
     }
 
-    bool UBLOX_ROS::initModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res)
+    void UBLOX_ROS::initModule(const std::shared_ptr<ublox_read_2::srv::InitModule::Request> req, std::shared_ptr<ublox_read_2::srv::InitModule::Response> res)
     {
-        switch(req.type)
+        switch(req->type)
         {
             case 0:
                 initBase();
@@ -148,10 +144,9 @@ namespace ublox_ros
                 break;
             default:
                 std::cerr<<"Error: initModule invalid type\n";
-                return false;
+                return;
                 break;
         }
-        return true;
     }
 
 }

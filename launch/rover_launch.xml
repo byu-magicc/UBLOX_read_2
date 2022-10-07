@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- be sure to check the rover serial port, it is often not ACM0-->
+  <arg name="rover_serial_port" 	default="/dev/ttyACM0"/>
+
+  <arg name="base_host" 			default="192.168.1.118"/>
+  <arg name="base_port"				default="16140"/>
+  <arg name="rover_host" 			default="192.168.1.74"/>
+  <arg name="rover_port"			default="16140"/>
+
+	<group>
+		<push-ros-namespace namespace = "rover"/>
+		<node name="f9p" pkg="ublox" exec="ublox_ros">
+			<param name="serial_port" value="$(arg rover_serial_port)"/>
+			<param name="rover_quantity" value="0"/>
+
+ 			<param name="local_host" value="$(arg rover_host)"/>
+			<param name="local_port" value="$(arg rover_port)"/>
+			<param name="base_host" value="$(arg base_host)"/>
+			<param name="base_port" value="$(arg base_port)"/>
+
+			<param from "$(find ublox)/params/ublox.yaml"/>
+		</node>
+	</group>
+
+</launch>

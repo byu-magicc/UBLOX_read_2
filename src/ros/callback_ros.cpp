@@ -126,16 +126,16 @@ void UBLOX_ROS::relposCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 
 
     relpos_flag_msg_.header.stamp = out.header.stamp;
-    relpos_flag_msg_.gnssFixOk = msg.flags.gnssFixOk;
-    relpos_flag_msg_.diffSoln = msg.flags.diffSoln;
-    relpos_flag_msg_.relPosValid = msg.flags.relPosValid;
-    relpos_flag_msg_.floatCarrSoln = msg.flags.floatCarrSoln;
-    relpos_flag_msg_.fixedCarrSoln = msg.flags.fixedCarrSoln;
-    relpos_flag_msg_.isMoving = msg.flags.isMoving;
-    relpos_flag_msg_.refPosMiss = msg.flags.refPosMiss;
-    relpos_flag_msg_.refObsMiss = msg.flags.refObsMiss;
-    relpos_flag_msg_.relPosHeadingValid = msg.flags.relPosHeadingValid;
-    relpos_flag_msg_.relPosNormalized = msg.flags.relPosNormalized;
+    relpos_flag_msg_.gnss_fix_ok = msg.flags.gnssFixOk;
+    relpos_flag_msg_.diff_soln = msg.flags.diffSoln;
+    relpos_flag_msg_.rel_pos_valid = msg.flags.relPosValid;
+    relpos_flag_msg_.float_carr_soln = msg.flags.floatCarrSoln;
+    relpos_flag_msg_.fixed_carr_soln = msg.flags.fixedCarrSoln;
+    relpos_flag_msg_.is_moving = msg.flags.isMoving;
+    relpos_flag_msg_.ref_pos_miss = msg.flags.refPosMiss;
+    relpos_flag_msg_.ref_obs_miss = msg.flags.refObsMiss;
+    relpos_flag_msg_.rel_pos_heading_valid = msg.flags.relPosHeadingValid;
+    relpos_flag_msg_.rel_pos_normalized = msg.flags.relPosNormalized;
     relpos_flag_msg_.flags = msg.flags.all_flags;
 
     if (arrow_flag == true) {
@@ -145,36 +145,36 @@ void UBLOX_ROS::relposCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     ublox_->vector_math(ned_1, ned_2, arrow);
 
     // Assign all the values
-    out.arrowNED[0] = arrow[0];
-    out.arrowNED[1] = arrow[1];
-    out.arrowNED[2] = arrow[2];
-    out.arrowLength = arrow[3];
-    out.arrowRPY[0] = arrow[4];
-    out.arrowRPY[1] = arrow[5];
-    out.arrowRPY[2] = arrow[6];
+    out.arrow_ned[0] = arrow[0];
+    out.arrow_ned[1] = arrow[1];
+    out.arrow_ned[2] = arrow[2];
+    out.arrow_length = arrow[3];
+    out.arrow_rpy[0] = arrow[4];
+    out.arrow_rpy[1] = arrow[5];
+    out.arrow_rpy[2] = arrow[6];
   }
     // Publish the RelPos ROS message
-    relpos_pub_.publish(out);
-    relposflag_pub_.publish(relpos_flag_msg_);
+    relpos_pub_->publish(out);
+    relposflag_pub_->publish(relpos_flag_msg_);
 }
 
 void UBLOX_ROS::svinCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::NAV_SVIN_t msg = ubx_msg.NAV_SVIN;
-    ublox::SurveyStatus out;
-    out.header.stamp = ros::Time::now(); /// TODO: do this right
+    ublox_read_2::msg::SurveyStatus out;
+    out.header.stamp = this->now(); /// TODO: do this right
     out.dur = msg.dur;
-    out.meanXYZ[0] = msg.meanX*1e-2;
-    out.meanXYZ[1] = msg.meanY*1e-2;
-    out.meanXYZ[2] = msg.meanZ*1e-2;
-    out.meanXYZHP[0] = msg.meanXHP*1e-3;
-    out.meanXYZHP[1] = msg.meanYHP*1e-3;
-    out.meanXYZHP[2] = msg.meanZHP*1e-3;
-    out.meanAcc = msg.meanAcc;
+    out.mean_xyz[0] = msg.meanX*1e-2;
+    out.mean_xyz[1] = msg.meanY*1e-2;
+    out.mean_xyz[2] = msg.meanZ*1e-2;
+    out.mean_xyz_hp[0] = msg.meanXHP*1e-3;
+    out.mean_xyz_hp[1] = msg.meanYHP*1e-3;
+    out.mean_xyz_hp[2] = msg.meanZHP*1e-3;
+    out.mean_acc = msg.meanAcc;
     out.obs = msg.obs;
     out.valid = msg.valid;
     out.active = msg.active;
-    survey_status_pub_.publish(out);
+    survey_status_pub_->publish(out);
 
 }
 
@@ -185,7 +185,7 @@ void UBLOX_ROS::posECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     if(!evalF9PID(f9pID)) return;
 
     *ecef_pos_tow_ptr_ = msg.iTOW;
-    ecef_ptr_->header.stamp = ros::Time::now();
+    ecef_ptr_->header.stamp = this->now();
     ecef_ptr_->position[0] = msg.ecefX*1e-2;
     ecef_ptr_->position[1] = msg.ecefY*1e-2;
     ecef_ptr_->position[2] = msg.ecefZ*1e-2;
@@ -205,7 +205,7 @@ void UBLOX_ROS::velECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
     if(!evalF9PID(f9pID)) return;
 
     *ecef_vel_tow_ptr_ = msg.iTOW;
-    ecef_ptr_->header.stamp = ros::Time::now();
+    ecef_ptr_->header.stamp = this->now();
     ecef_ptr_->velocity[0] = msg.ecefVX*1e-2;
     ecef_ptr_->velocity[1] = msg.ecefVY*1e-2;
     ecef_ptr_->velocity[2] = msg.ecefVZ*1e-2;
@@ -220,44 +220,44 @@ void UBLOX_ROS::velECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 void UBLOX_ROS::obsCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::RXM_RAWX_t msg = ubx_msg.RXM_RAWX;
-    ublox::ObsVec out;
+    ublox_read_2::msg::ObsVec out;
     UTCTime utc =UTCTime::fromGPS(msg.week, msg.rcvTow*1e3);
     out.header.stamp.sec = utc.sec;
-    out.header.stamp.nsec = utc.nsec;
+    out.header.stamp.nanosec = utc.nsec;
     for (int i = 0; i < msg.numMeas; i++)
     {
         out.obs[i].sat = msg.meas[i].svId;
-        out.obs[i].gnssID = msg.meas[i].gnssId;
+        out.obs[i].gnss_id = msg.meas[i].gnssId;
         out.obs[i].signal = ublox::sigId(msg.meas[i].gnssId, msg.meas[i].sigId);
         switch (out.obs[i].signal)
         {
-        case ublox::Observation::GPS_L1_CA:
-        case ublox::Observation::GALILEO_E1_B:
-        case ublox::Observation::GALILEO_E1_C:
-        case ublox::Observation::QZSS_L1_CA:
+        case ublox_read_2::msg::Observation::GPS_L1_CA:
+        case ublox_read_2::msg::Observation::GALILEO_E1_B:
+        case ublox_read_2::msg::Observation::GALILEO_E1_C:
+        case ublox_read_2::msg::Observation::QZSS_L1_CA:
             out.obs[i].freq = Ephemeris::GPS_FREQL1;
             break;
-        case ublox::Observation::GPS_L2_CL:
-        case ublox::Observation::GPS_L2_CM:
+        case ublox_read_2::msg::Observation::GPS_L2_CL:
+        case ublox_read_2::msg::Observation::GPS_L2_CM:
             out.obs[i].freq = Ephemeris::GPS_FREQL2;
             break;
-        case ublox::Observation::GLONASS_L1:
+        case ublox_read_2::msg::Observation::GLONASS_L1:
             out.obs[i].freq = GlonassEphemeris::FREQ1_GLO + msg.meas[i].freqId * GlonassEphemeris::DFRQ1_GLO;
             break;
-        case ublox::Observation::GLONASS_L2:
+        case ublox_read_2::msg::Observation::GLONASS_L2:
             out.obs[i].freq = GlonassEphemeris::FREQ2_GLO + msg.meas[i].freqId * GlonassEphemeris::DFRQ2_GLO;
             break;
             // These may not be right
-//        case ublox::Observation::GALILEO_E5_BI:
-//        case ublox::Observation::GALILEO_E5_BQ:
+//        case ublox_read_2::msg::Observation::GALILEO_E5_BI:
+//        case ublox_read_2::msg::Observation::GALILEO_E5_BQ:
 //            out.obs[i].freq = Ephemeris::GALILEO_FREQL5b;
 //            break;
-//        case ublox::Observation::BEIDOU_B1I_D1:
-//        case ublox::Observation::BEIDOU_B1I_D2:
+//        case ublox_read_2::msg::Observation::BEIDOU_B1I_D1:
+//        case ublox_read_2::msg::Observation::BEIDOU_B1I_D2:
 //            out.obs[i].freq = Ephemeris::BEIDOU_FREQ_B1;
 //            break;
-//        case ublox::Observation::BEIDOU_B2I_D1:
-//        case ublox::Observation::BEIDOU_B2I_D2:
+//        case ublox_read_2::msg::Observation::BEIDOU_B2I_D1:
+//        case ublox_read_2::msg::Observation::BEIDOU_B2I_D2:
 //            out.obs[i].freq = Ephemeris::BEIDOU_FREQ_B2;
 //            break;
         default:
@@ -266,39 +266,39 @@ void UBLOX_ROS::obsCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
         }
         out.obs[i].cno = msg.meas[i].cno;
         out.obs[i].locktime = msg.meas[i].locktime;
-        out.obs[i].P = msg.meas[i].prMeas;
-        out.obs[i].L = msg.meas[i].cpMeas;
-        out.obs[i].D = msg.meas[i].doMeas;
-        out.obs[i].stdevP = 0.01 * pow(2, msg.meas[i].prStdev);
-        out.obs[i].stdevL = 0.004 * msg.meas[i].cpStdev;
-        out.obs[i].stdevD = 0.002 * pow(2, msg.meas[i].doStdev);
+        out.obs[i].p = msg.meas[i].prMeas;
+        out.obs[i].l = msg.meas[i].cpMeas;
+        out.obs[i].d = msg.meas[i].doMeas;
+        out.obs[i].stdevp = 0.01 * pow(2, msg.meas[i].prStdev);
+        out.obs[i].stdevl = 0.004 * msg.meas[i].cpStdev;
+        out.obs[i].stdevd = 0.002 * pow(2, msg.meas[i].doStdev);
 
         // indicate cycle slip
         if (msg.meas[i].cpMeas != 0.0
             && (msg.meas[i].trkStat & ublox::RXM_RAWX_t::trkStat_HalfCyc | ublox::RXM_RAWX_t::trkStat_subHalfCyc))
         {
-            out.obs[i].LLI =  ublox::Observation::LLI_HALF_CYCLE_AMB;
+            out.obs[i].lli =  ublox_read_2::msg::Observation::LLI_HALF_CYCLE_AMB;
         }
         else
         {
-            out.obs[i].LLI = 0;
+            out.obs[i].lli = 0;
         }
     }
-    obs_pub_.publish(out);
+    obs_pub_->publish(out);
 }
 
 void UBLOX_ROS::ephCB(const Ephemeris &eph)
 {
-    ublox::Ephemeris out;
-    out.header.stamp = ros::Time::now();
+    ublox_read_2::msg::Ephemeris out;
+    out.header.stamp = this->now();
 
     out.sat = eph.sat;
-    out.gnssID = eph.gnssID;
+    out.gnss_id = eph.gnssID;
     out.toe.sec = eph.toe.sec;
-    out.toe.nsec = eph.toe.nsec;
+    out.toe.nanosec = eph.toe.nsec;
     out.toc.sec = eph.toc.sec;
     std::cerr<<"About to spin\n";
-    out.toc.nsec = eph.toc.nsec;
+    out.toc.nanosec = eph.toc.nsec;
 
     out.tow = eph.tow;
     out.iodc = eph.iodc;
@@ -309,9 +309,9 @@ void UBLOX_ROS::ephCB(const Ephemeris &eph)
     out.health = eph.health;
     out.alert_flag = eph.alert_flag;
     out.anti_spoof = eph.anti_spoof;
-    out.code_on_L2 = eph.code_on_L2;
+    out.code_on_l2 = eph.code_on_L2;
     out.ura = eph.ura;
-    out.L2_P_data_flag = eph.L2_P_data_flag;
+    out.l2_p_data_flag = eph.L2_P_data_flag;
     out.fit_interval_flag = eph.fit_interval_flag;
     out.age_of_data_offset = eph.age_of_data_offset;
     out.tgd[0] = eph.tgd[0];
@@ -337,21 +337,21 @@ void UBLOX_ROS::ephCB(const Ephemeris &eph)
     out.cic = eph.cic;
     out.cis = eph.cis;
 
-    eph_pub_.publish(out);
+    eph_pub_->publish(out);
 }
 
 void UBLOX_ROS::gephCB(const GlonassEphemeris &eph)
 {
-    ublox::GlonassEphemeris out;
-    out.header.stamp = ros::Time::now();
+    ublox_read_2::msg::GlonassEphemeris out;
+    out.header.stamp = this->now();
 
     out.sat = eph.sat;
-    out.gnssID = eph.gnssID;
+    out.gnss_id = eph.gnssID;
 
     out.toe.sec = eph.toe.sec;
-    out.toe.nsec = eph.toe.nsec;
+    out.toe.nanosec = eph.toe.nsec;
     out.tof.sec = eph.tof.sec;
-    out.tof.nsec = eph.tof.nsec;
+    out.tof.nanosec = eph.tof.nsec;
 
     out.iode = eph.iode;
     out.frq = eph.frq;
@@ -371,60 +371,60 @@ void UBLOX_ROS::gephCB(const GlonassEphemeris &eph)
     out.gamn = eph.gamn;
     out.dtaun = eph.dtaun;
 
-    geph_pub_.publish(out);
+    geph_pub_->publish(out);
 }
 
 void UBLOX_ROS::rtcmInputCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::RXM_RTCM_t msg = ubx_msg.RXM_RTCM;
     
-    ublox::RTCMInput out;
-    out.header.stamp = ros::Time::now();
+    ublox_read_2::msg::RTCMInput out;
+    out.header.stamp = this->now();
     out.version = msg.version;
     out.flags = msg.flags;
-    out.crcFailed = msg.crcFailed;
-    out.subType = msg.subType;
-    out.refStation = msg.refStation;
-    out.msgType = msg.msgType;
+    out.crc_failed = msg.crcFailed;
+    out.sub_type = msg.subType;
+    out.ref_station = msg.refStation;
+    out.msg_type = msg.msgType;
 
-    rtcm_input_pub_.publish(out);
+    rtcm_input_pub_->publish(out);
 }
 
 void UBLOX_ROS::rxmMeasxCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::RXM_MEASX_t msg = ubx_msg.RXM_MEASX;
 
-    ublox::SatelliteStatus out;
+    ublox_read_2::msg::SatelliteStatus out;
     out.version = msg.version;
-    out.gpsTOW = msg.gpsTOW;
-    out.gloTOW = msg.gloTOW;
-    out.bdsTOW = msg.bdsTOW;
-    out.qzssTOW = msg.qzssTOW;
-    out.gpsTOWacc = msg.gpsTOWacc;
-    out.gloTOWacc = msg.gloTOWacc;
-    out.bdsTOWacc = msg.bdsTOWacc;
-    out.qzssTOWacc = msg.qzssTOWacc;
-    out.numSV = msg.numSV;
+    out.gps_tow = msg.gpsTOW;
+    out.glo_tow = msg.gloTOW;
+    out.bds_tow = msg.bdsTOW;
+    out.qzss_tow = msg.qzssTOW;
+    out.gps_tow_acc = msg.gpsTOWacc;
+    out.glo_tow_acc = msg.gloTOWacc;
+    out.bds_tow_acc = msg.bdsTOWacc;
+    out.qzss_tow_acc = msg.qzssTOWacc;
+    out.num_sv = msg.numSV;
     out.flags = msg.flags;
 
     for(uint8_t svIndex=0; svIndex<msg.numSV; svIndex++)
     {
-        ublox::Satellite sat;
+        ublox_read_2::msg::Satellite sat;
         ublox::RXM_MEASX_t::SV_INFO_t msgsat = msg.sv[svIndex];
-        sat.gnssID = msgsat.gnssID;
-        sat.svID = msgsat.svID;
-        sat.carrierNoiseRatio = msgsat.cNo;
-        sat.multipathIndex = msgsat.mpathIndic;
-        sat.dopplerMeas = msgsat.dopplerMS;
-        sat.dopperHz = msgsat.dopplerHZ;
-        sat.wholeChips = msgsat.wholeChips;
-        sat.fracChips = msgsat.fracChips;
-        sat.codePhase = msgsat.codePhase;
-        sat.intCodePhase = msgsat.intCodePhase;
-        sat.pseuRangeRMSError = msgsat.pseuRangeRMSErr;
+        sat.gnss_id = msgsat.gnssID;
+        sat.sv_id = msgsat.svID;
+        sat.carrier_noise_ratio = msgsat.cNo;
+        sat.multipath_index = msgsat.mpathIndic;
+        sat.doppler_meas = msgsat.dopplerMS;
+        sat.dopper_hz = msgsat.dopplerHZ;
+        sat.whole_chips = msgsat.wholeChips;
+        sat.frac_chips = msgsat.fracChips;
+        sat.code_phase = msgsat.codePhase;
+        sat.int_code_phase = msgsat.intCodePhase;
+        sat.pseu_range_rms_error = msgsat.pseuRangeRMSErr;
         out.satellites.push_back(sat);
     }
 
-    sat_status_pub_.publish(out);
+    sat_status_pub_->publish(out);
 }
 }

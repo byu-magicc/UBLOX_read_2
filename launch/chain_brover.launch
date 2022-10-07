@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="brover_serial_port"  default="/dev/ttyACM0"/>
+    
+    <arg name="base_host"           default="192.168.0.3"/>
+    <arg name="base_port"           default="16140"/>
+    <arg name="brover_host"         default="192.168.1.3"/>
+    <arg name="brover_port1"        default="16140"/>
+
+    <arg name="brover_port2"        default="16145"/>
+    <arg name="rover_host"          default="192.168.2.3"/>
+    <arg name="rover_port"          default="16140"/>
+
+    <group ns="brover">
+        <node name="f9p" pkg="ublox" type="ublox_ros">
+            <param name="serial_port"       value="$(arg brover_serial_port)"/>
+            <param name="rover_quantity"    value="1"/>
+
+            <param name="local_host"        value="$(arg brover_host)"/>
+            <param name="local_port"        value="$(arg brover_port1)"/>
+            <param name="base_host"         value="$(arg base_host)"/>
+            <param name="base_port"         value="$(arg base_port)"/>
+
+            <param name="local_host2"       value="$(arg brover_host)"/>
+            <param name="local_port2"       value="$(arg brover_port2)"/>
+            <param name="rover_host"        value="$(arg rover_host)"/>
+            <param name="rover_port"        value="$(arg rover_port)"/>
+        </node>
+    </group>
+    
+</launch>

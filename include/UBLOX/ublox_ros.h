@@ -95,13 +95,13 @@ private:
     void ephCB(const Ephemeris& eph);
     void gephCB(const GlonassEphemeris& eph);
 
-    bool cfgValGet(ublox_read_2::srv::CfgValGet::Request &req, ublox_read_2::srv::CfgValGet::Response &res);
-    bool cfgValGetAll(ublox_read_2::srv::CfgValGetAll::Request &req, ublox_read_2::srv::CfgValGetAll::Response &res);
-    bool cfgValDel(ublox_read_2::srv::CfgValDel::Request &req, ublox_read_2::srv::CfgValDel::Response &res);
-    bool cfgValSet(ublox_read_2::srv::CfgValSet::Request &req, ublox_read_2::srv::CfgValSet::Response &res);
-    bool cfgReset(ublox_read_2::srv::CfgReset::Request &req, ublox_read_2::srv::CfgReset::Response &res);
-    bool initModule(ublox_read_2::srv::InitModule::Request &req, ublox_read_2::srv::InitModule::Response &res);
-    bool getVersion(ublox_read_2::srv::GetVersion::Request &req, ublox_read_2::srv::GetVersion::Response &res);
+    void cfgValGet(const std::shared_ptr<ublox_read_2::srv::CfgValGet::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValGet::Response> res);
+    void cfgValGetAll(std::shared_ptr<ublox_read_2::srv::CfgValGetAll::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValGetAll::Response> res);
+    void cfgValDel(std::shared_ptr<ublox_read_2::srv::CfgValDel::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValDel::Response> res);
+    void cfgValSet(std::shared_ptr<ublox_read_2::srv::CfgValSet::Request> req, std::shared_ptr<ublox_read_2::srv::CfgValSet::Response> res);
+    void cfgReset(std::shared_ptr<ublox_read_2::srv::CfgReset::Request> req, std::shared_ptr<ublox_read_2::srv::CfgReset::Response> res);
+    void initModule(std::shared_ptr<ublox_read_2::srv::InitModule::Request> req, std::shared_ptr<ublox_read_2::srv::InitModule::Response> res);
+    void getVersion(std::shared_ptr<ublox_read_2::srv::GetVersion::Request> req, std::shared_ptr<ublox_read_2::srv::GetVersion::Response> res);
     rclcpp::Service<ublox_read_2::srv::CfgValGet>::SharedPtr cfg_val_get_;
     rclcpp::Service<ublox_read_2::srv::CfgValGetAll>::SharedPtr cfg_val_get_all_;
     rclcpp::Service<ublox_read_2::srv::CfgValDel>::SharedPtr cfg_val_del_;

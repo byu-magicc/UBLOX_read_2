@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+    <group ns="base">
+		<node name="f9p" pkg="ublox" type="ublox_ros">
+			<param name="serial_port" value="/dev/ttyACM0"/>
+            <param name="debug" value="true"/>
+        </node>
+	</group>
+
+</launch>
