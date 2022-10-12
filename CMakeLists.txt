@@ -102,19 +102,21 @@ if (${BUILD_ROS})
 
   rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-  target_link_libraries(ublox_ros UBLOX)
+  ament_target_dependencies(ublox_ros UBLOX)
+  # target_link_libraries(ublox_ros UBLOX)
   target_include_directories(ublox_ros PUBLIC ../../devel/include)
 
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
 )
+install(DIRECTORY
+  params
+  DESTINATION share/${PROJECT_NAME}/
+)
 
-
-  install(TARGETS
-  ublox_ros
+install(TARGETS ublox_ros
   DESTINATION lib/${PROJECT_NAME})
-
 endif()
 
 ament_package()

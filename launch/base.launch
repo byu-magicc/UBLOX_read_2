@@ -7,18 +7,19 @@
   <arg name="rover_host" 			default="192.168.0.143"/>
   <arg name="rover_port"			default="16140"/>
 	
-	<group ns="base">
-		<node name="f9p" pkg="ublox" type="ublox_ros">
-			<param name="serial_port"       value="$(arg base_serial_port)"/>
+	<group>
+		<push-ros-namespace namespace = "base"/>
+		<node name="f9p" pkg="ublox_read_2" exec="ublox_ros">
+			<param name="serial_port"       value="$(var base_serial_port)"/>
 			<param name="rover_quantity"    value="1"/>
 			<param name="base_type"         value="moving"/>
 
-			<param name="local_host"       value="$(arg base_host)"/>
-			<param name="local_port"        value="$(arg base_port)"/>
-			<param name="rover_host"        value="$(arg rover_host)"/>
-			<param name="rover_port"        value="$(arg rover_port)"/>
+			<param name="local_host"       value="$(var base_host)"/>
+			<param name="local_port"        value="$(var base_port)"/>
+			<param name="rover_host"        value="$(var rover_host)"/>
+			<param name="rover_port"        value="$(var rover_port)"/>
 
-			<rosparam command="load" file="$(find ublox)/params/ublox.yaml"/>
+			<param  from="$(find-pkg-share ublox_read_2)/params/ublox.yaml"/>
 		</node> 
 	</group>
 	
