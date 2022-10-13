@@ -102,8 +102,8 @@ if (${BUILD_ROS})
 
   rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-  ament_target_dependencies(ublox_ros UBLOX)
-  # target_link_libraries(ublox_ros UBLOX)
+  # ament_target_dependencies(ublox_ros UBLOX)
+  target_link_libraries(ublox_ros UBLOX)
   target_include_directories(ublox_ros PUBLIC ../../devel/include)
 
 install(DIRECTORY
