@@ -47,7 +47,7 @@ set(async_comm_INCLUDE_DIRS lib/async_comm/include;${Boost_INCLUDE_DIRS})
 
 message("async_comm_INCLUDE_DIRS: ${async_comm_INCLUDE_DIRS}\n")
 
-add_library(UBLOX
+add_library(UBLOX SHARED
     src/ublox.cpp
 	    src/parsers/ubx_maps.cpp
     src/parsers/ubx.cpp
@@ -92,7 +92,7 @@ if (${BUILD_ROS})
     DEPENDENCIES builtin_interfaces std_msgs
   )
 	
-  ament_Export_libraries(UBLOX)
+  ament_export_libraries(UBLOX)
   ament_export_include_directories(include)
   ament_export_dependencies(std_msgs rosidl_default_runtime message_runtime)
 	
@@ -118,5 +118,10 @@ install(DIRECTORY
 install(TARGETS ublox_ros
   DESTINATION lib/${PROJECT_NAME})
 endif()
+
+install(
+  TARGETS UBLOX async_comm
+  DESTINATION lib/
+)
 
 ament_package()
