@@ -20,11 +20,6 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
 
     // declare parameters
 
-    
-    
-    
-
-
     std::map<std::string, std::string> string_params;
     std::map<std::string, int> int_params;
 

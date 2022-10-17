@@ -1,24 +1,25 @@
-ublox_read_2:
-  ros__parameters:
-    #GNSS Constellations configured
-    GPS: 1
-    GLONAS: 0
-    BEIDOU: 1
-    GALILEO: 1
+rover: 
+  ublox_ros:
+    ros__parameters:
+      #GNSS Constellations configured
+      GPS: 1
+      GLONAS: 0
+      BEIDOU: 1
+      GALILEO: 1
 
-    #moving or stationary base
-    base_type: "moving"  
+      #moving or stationary base
+      base_type: "moving"  
 
-    #if stationary the survey time and survey accuracy minimums
-    Surveytime: 30
-    Surveyacc: 5000000
+      #if stationary the survey time and survey accuracy minimums
+      Surveytime: 30
+      Surveyacc: 5000000
 
-    #GNSS message output rate
-    message_rate: 5
+      #GNSS message output rate
+      message_rate: 5
 
-    #These values are just for the base.  
-    #They need to be changed in the launch file for the rover
-    rover_quantity: 1    #number of rovers
+      #These values are just for the base.  
+      #They need to be changed in the launch file for the rover
+      rover_quantity: 1    #number of rovers
 
 
 
