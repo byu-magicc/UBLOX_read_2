@@ -1,5 +1,5 @@
 rover: 
-  ublox_ros:
+  f9p:
     ros__parameters:
       #GNSS Constellations configured
       GPS: 1
