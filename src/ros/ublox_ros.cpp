@@ -175,6 +175,7 @@ bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
     {
         case 0:
             pvt_ptr_ = &pvt_msg_;
+            ecef_ptr_ = &ecef_msg_;
             ecef_pos_tow_ptr_ = &ecef_pos_tow_;
             ecef_vel_tow_ptr_ = &ecef_vel_tow_;
             pvt_tow_ptr_ = &pvt_tow_;
@@ -182,6 +183,7 @@ bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
             break;
         case 1:
             pvt_ptr_ = &base_pvt_msg_;
+            ecef_ptr_ = &base_ecef_msg_;
             ecef_pos_tow_ptr_ = &base_ecef_pos_tow_;
             ecef_vel_tow_ptr_ = &base_ecef_vel_tow_;
             pvt_tow_ptr_ = &base_pvt_tow_;

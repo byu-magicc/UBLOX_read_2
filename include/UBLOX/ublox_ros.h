@@ -146,11 +146,11 @@ private:
 
     ublox_read_2::msg::PosVelEcef ecef_msg_;
     ublox_read_2::msg::PosVelEcef base_ecef_msg_;
-    ublox_read_2::msg::PosVelEcef *ecef_ptr_;
+    ublox_read_2::msg::PosVelEcef* ecef_ptr_;
 
     ublox_read_2::msg::PositionVelocityTime pvt_msg_;
     ublox_read_2::msg::PositionVelocityTime base_pvt_msg_;
-    ublox_read_2::msg::PositionVelocityTime *pvt_ptr_;
+    ublox_read_2::msg::PositionVelocityTime* pvt_ptr_;
 
     ublox_read_2::msg::RelPosFlags relpos_flag_msg_;
 
