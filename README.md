@@ -8,3 +8,8 @@ The UBX parsing functionality is abstracted into a library for easy integration 
 Hardware documentation found here Software documentation found here.
 
 Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version of this library.
+
+### Including async_comm as a submodule
+After cloning this repository, run the following command to include the async_comm submodule:
+
+    $ git submodule update --init --recursive
