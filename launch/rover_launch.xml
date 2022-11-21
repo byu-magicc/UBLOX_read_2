@@ -5,7 +5,7 @@
 
   <arg name="base_host" 			default="192.168.1.118"/>
   <arg name="base_port"				default="16140"/>
-  <arg name="rover_host" 			default="192.168.1.9"/>
+  <arg name="rover_host" 			default="192.168.1.122"/>
   <arg name="rover_port"			default="16140"/>
 
 	<group>

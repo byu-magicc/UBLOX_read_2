@@ -48,7 +48,11 @@ namespace ublox_ros
         // }
 
         for(int i=1+j; i <= rover_quantity_; i++) {
-
+            this->declare_parameter<std::string>("local_host"+std::to_string(i), "");
+            this->declare_parameter<uint16_t>("local_port"+std::to_string(i), 0);
+            this->declare_parameter<std::string>("rover_host"+std::to_string(i), "");
+            this->declare_parameter<uint16_t>("rover_port"+std::to_string(i), 0);
+            
             this->get_parameter<std::string>("local_host"+std::to_string(i), local_host[i-1]);
             this->get_parameter<uint16_t>("local_port"+std::to_string(i), local_port[i-1]);
             this->get_parameter<std::string>("rover_host"+std::to_string(i), rover_host[i-1]);
