@@ -13,3 +13,7 @@ Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version 
 After cloning this repository, run the following command to include the async_comm submodule:
 
     $ git submodule update --init --recursive
+
+See rover_launch.xml for an example of launching a rover node.
+See base_launch.xml for an example of launching a base node.
+See example_2_rovers_launch.xml for an example of launching a base node with two rover nodes.
