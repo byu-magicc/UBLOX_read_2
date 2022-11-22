@@ -24,6 +24,7 @@ Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version 
     $ cd ublox_read_2
     $ git submodule update --init --recursive
 
+<<<<<<< HEAD
 4. Run the following commands to build the package in your ROS2 workspace.
 
     $ cd ../../
@@ -40,3 +41,10 @@ You are now ready to use this repository in your ROS2 workspace!
 See rover_launch.xml for an example of launching a rover node.
 See base_launch.xml for an example of launching a base node.
 See example_2_rovers_launch.xml for an example of launching a base node with two rover nodes.
+=======
+
+### Example launch files
+See rover_launch.xml for an example of launching a rover node.\
+See base_launch.xml for an example of launching a base node.\
+See example_2_rovers_launch.xml for an example of launching a base node with two rover nodes.\
+>>>>>>> 80d44765fe487e1de209611b0a2fa679ed7713c4
