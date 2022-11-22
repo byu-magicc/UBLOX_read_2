@@ -9,10 +9,33 @@ Hardware documentation found here Software documentation found here.
 
 Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version of this library.
 
-### Including async_comm as a submodule
-After cloning this repository, run the following command to include the async_comm submodule:
+## Cloning and building as a ROS2 package
 
+1. Go to your ROS2 workspace directory (or create one by following the instructions [here](https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html). Make sure you source setup file in your workspace.
+
+    $ source <path to your workspace>/install/setup.bash
+
+2. In the src directory of your ROS2 workspace, clone this repository.
+   
+    $ git clone https://gitlab.magiccvs.byu.edu/boatlanding/ublox_read_2.git
+
+3. After cloning this repository, run the following commands to include the async_comm submodule:
+
+    $ cd ublox_read_2
     $ git submodule update --init --recursive
+
+4. Run the following commands to build the package in your ROS2 workspace.
+
+    $ cd ../../
+    $ colcon build --packages-select ublox_read_2
+
+5. Source your workspace again
+
+    $ source <path to your workspace>/install/setup.bash
+
+You are now ready to use this repository in your ROS2 workspace!
+
+### Example launch files
 
 See rover_launch.xml for an example of launching a rover node.
 See base_launch.xml for an example of launching a base node.
