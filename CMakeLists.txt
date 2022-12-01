@@ -94,7 +94,7 @@ if (${BUILD_ROS})
 	
   ament_export_libraries(UBLOX)
   ament_export_include_directories(include)
-  ament_export_dependencies(std_msgs rosidl_default_runtime message_runtime)
+  ament_export_dependencies(std_msgs rosidl_default_runtime)
 	
 
   add_executable(ublox_ros src/ros/ublox_node.cpp src/ros/ublox_ros.cpp src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp) 
