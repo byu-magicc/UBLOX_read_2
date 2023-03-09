@@ -12,7 +12,6 @@
 		<push-ros-namespace namespace = "rover"/>
 		<node name="f9p" pkg="ublox_read_2" exec="ublox_ros">
 			<param name="serial_port" value="$(var rover_serial_port)"/>
-			<param name="rover_quantity" value="0"/>
 
  			<param name="local_host" value="$(var rover_host)"/>
 			<param name="local_port" value="$(var rover_port)"/>

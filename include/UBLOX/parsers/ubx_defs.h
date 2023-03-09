@@ -369,7 +369,14 @@ typedef union {
 
     enum {
         MSGOUT_SVIN = 0x2091008b,
-        TMODE_MODE = 0x20030001,
+        TMODE_MODE = 0x20030001,  //Receiver mode: 0-disabled, 1-survey-in, 2-fixed
+        TMODE_POS_TYPE = 0x20030002,  //Determines whether the ARP position is given in ECEF or LAT/LON/HEIGHT: 0-ECEF, 1-LLH
+        TMODE_LAT = 0x40030009, //Latitude of the ARP position (deg)
+        TMODE_LON = 0x4003000a, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT = 0x4003000b, //Latitude of the ARP position (cm)
+        TMODE_LAT_HP = 0x2003000c, //Latitude of the ARP position (deg)
+        TMODE_LON_HP = 0x2003000d, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT_HP = 0x2003000e, //Latitude of the ARP position (mm)
         TMODE_SVIN_MIN_DUR = 0x40030010, //survey in minimum duration s
         TMODE_SVIN_ACC_LIMIT = 0x40030011, //Survey-in position accuracy limit mm
     };
@@ -512,7 +519,14 @@ typedef struct {
 
     enum {
         MSGOUT_SVIN = 0x2091008b,
-        TMODE_MODE = 0x20030001,
+        TMODE_MODE = 0x20030001,  //Receiver mode: 0-disabled, 1-survey-in, 2-fixed
+        TMODE_POS_TYPE = 0x20030002,  //Determines whether the ARP position is given in ECEF or LAT/LON/HEIGHT: 0-ECEF, 1-LLH
+        TMODE_LAT = 0x40030009, //Latitude of the ARP position (deg)
+        TMODE_LON = 0x4003000a, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT = 0x4003000b, //Latitude of the ARP position (cm)
+        TMODE_LAT_HP = 0x2003000c, //Latitude of the ARP position (deg)
+        TMODE_LON_HP = 0x2003000d, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT_HP = 0x2003000e, //Latitude of the ARP position (mm)
         TMODE_SVIN_MIN_DUR = 0x40030010, //survey in minimum duration s
         TMODE_SVIN_ACC_LIMIT = 0x40030011, //Survey-in position accuracy limit mm
     };
@@ -640,7 +654,14 @@ typedef struct
 
     enum {
         MSGOUT_SVIN = 0x2091008b,
-        TMODE_MODE = 0x20030001,
+        TMODE_MODE = 0x20030001,  //Receiver mode: 0-disabled, 1-survey-in, 2-fixed
+        TMODE_POS_TYPE = 0x20030002,  //Determines whether the ARP position is given in ECEF or LAT/LON/HEIGHT: 0-ECEF, 1-LLH
+        TMODE_LAT = 0x40030009, //Latitude of the ARP position (deg)
+        TMODE_LON = 0x4003000a, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT = 0x4003000b, //Latitude of the ARP position (cm)
+        TMODE_LAT_HP = 0x2003000c, //Latitude of the ARP position (deg)
+        TMODE_LON_HP = 0x2003000d, //Longitude of the ARP position (deg)
+        TMODE_HEIGHT_HP = 0x2003000e, //Latitude of the ARP position (mm)
         TMODE_SVIN_MIN_DUR = 0x40030010, //survey in minimum duration s
         TMODE_SVIN_ACC_LIMIT = 0x40030011, //Survey-in position accuracy limit mm
     };
