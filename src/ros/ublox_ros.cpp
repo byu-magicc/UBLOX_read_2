@@ -34,7 +34,7 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     string_params["local_host1"] = "localhost";
     string_params["base_host1"] = "localhost";
 
-    int_params["message_rate"] = 10; //rate at which GNSS measurements are taken in hz
+    int_params["message_rate"] = 5; //rate at which GNSS measurements are taken in hz
     int_params["rover_quantity"] = 0;
     int_params["GPS"] = 1;
     int_params["GLONAS"] = 0;
