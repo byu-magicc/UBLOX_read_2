@@ -24,6 +24,6 @@
     #GNSS message output rate
     message_rate: 5
 
-    #These values are just for the base.  
+    #These values are just for the base.
     #They need to be changed in the launch file for the rover
     rover_quantity: 1    #number of rovers

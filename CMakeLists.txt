@@ -48,12 +48,12 @@ set(async_comm_INCLUDE_DIRS lib/async_comm/include;${Boost_INCLUDE_DIRS})
 message("async_comm_INCLUDE_DIRS: ${async_comm_INCLUDE_DIRS}\n")
 
 add_library(UBLOX SHARED
-    src/ublox.cpp
-	    src/parsers/ubx_maps.cpp
-    src/parsers/ubx.cpp
-    src/parsers/rtcm.cpp
-    src/parsers/nav.cpp
-    src/utctime.cpp
+  src/ublox.cpp
+  src/parsers/ubx_maps.cpp
+  src/parsers/ubx.cpp
+  src/parsers/rtcm.cpp
+  src/parsers/nav.cpp
+  src/utctime.cpp
 )
 
 message("UBLOX Boost include dirs: ${Boost_INCLUDE_DIRS}")
@@ -83,21 +83,21 @@ if (${BUILD_ROS})
     "msg/SatelliteStatus.msg"
     "msg/SurveyStatus.msg"
     "srv/CfgValGet.srv"
-		"srv/CfgValDel.srv"
-		"srv/CfgValSet.srv"
-		"srv/CfgReset.srv"
-		"srv/CfgValGetAll.srv"
-		"srv/GetVersion.srv"
-		"srv/InitModule.srv"
+    "srv/CfgValDel.srv"
+    "srv/CfgValSet.srv"
+    "srv/CfgReset.srv"
+    "srv/CfgValGetAll.srv"
+    "srv/GetVersion.srv"
+    "srv/InitModule.srv"
     DEPENDENCIES builtin_interfaces std_msgs
   )
-	
+
   ament_export_libraries(UBLOX)
   ament_export_include_directories(include)
   ament_export_dependencies(std_msgs rosidl_default_runtime)
-	
 
-  add_executable(ublox_ros src/ros/ublox_node.cpp src/ros/ublox_ros.cpp src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp) 
+
+  add_executable(ublox_ros src/ros/ublox_node.cpp src/ros/ublox_ros.cpp src/ros/callback_ros.cpp src/ros/services_ros.cpp src/ros/init_ros.cpp)
   ament_target_dependencies(ublox_ros rclcpp std_msgs sensor_msgs)
 
   rosidl_target_interfaces(ublox_ros ${PROJECT_NAME} "rosidl_typesupport_cpp")
@@ -106,17 +106,18 @@ if (${BUILD_ROS})
   target_link_libraries(ublox_ros UBLOX)
   target_include_directories(ublox_ros PUBLIC ../../devel/include)
 
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
-)
-install(DIRECTORY
-  params
-  DESTINATION share/${PROJECT_NAME}/
-)
+  install(DIRECTORY
+    launch
+    DESTINATION share/${PROJECT_NAME}/
+  )
+  install(DIRECTORY
+    params
+    DESTINATION share/${PROJECT_NAME}/
+  )
 
-install(TARGETS ublox_ros
-  DESTINATION lib/${PROJECT_NAME})
+  install(TARGETS ublox_ros
+    DESTINATION lib/${PROJECT_NAME}
+  )
 endif()
 
 install(
