@@ -39,35 +39,16 @@ for b_name, db_name in zip(bag_name, database_name):
     bag_file = fdir + b_name + db_name
     parser = bag_parser.BagParser(bag_file)
 
-    messages_rel_pos = parser.get_messages("/r1/RelPos")
-    set_trace()
+    for topic in topics:
+        msg_list = parser.get_messages(topic)
 
-    message_time = []
-    header_time = []
-    pos_all = []
-    for mm in messages_rel_pos:
-        # mtt = 1e-9 * mm[0]                        # do not convert this to a 64-bit double, you will lose precision
-        message_time.append(mm[0])
+        header_time, topic_data = parser.get_msg_data(msg_list)
 
-        htt_sec = mm[1].header.stamp.sec
-        htt_nano = mm[1].header.stamp.nanosec
-        # htt = htt_sec + 1e-9 * htt_nano           # do not convert this to a 64-bit double, you will lose precision
-        header_time.append([htt_sec, htt_nano])
-
-        curr_pos = mm[1].rel_pos_ned
-        pos_all.append(curr_pos)
+        topic_safe = topic.replace("/", "_")
+        np.savez(fdir + b_name + topic_safe + ".npz", header_time=header_time, **topic_data)
     #
 
-    message_time = np.array(message_time)
-    header_time = np.array(header_time).T
-    pos_all = np.array(pos_all).T
-
-    gabe = "Gabe"
-
     # # np.savetxt(bag_file_name + ".csv", pos_all, delimiter=",", header="north, east, down")
-    # np.savez(b_name[1:] + ".npz", message_time=message_time, header_time=header_time, pos_all=pos_all)
-    np.savez(fdir + b_name + ".npz", message_time=message_time, header_time=header_time, pos_all=pos_all)
-    np.savez(fdir + b_name + ".npz", gabe=message_time, header_time=header_time, pos_all=pos_all)
-
+    # np.savez(fdir + b_name + ".npz", header_time=header_time, **topic_data)
 
 #
