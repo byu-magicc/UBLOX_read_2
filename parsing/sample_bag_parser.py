@@ -43,7 +43,7 @@ topics = [
 ]
 
 # for bag_file_name in file_names:
-for b_name, db_name in zip(bag_name, database_name):
+for ii, (b_name, db_name) in enumerate(zip(bag_name, database_name)):
     # bag_file = f"{bag_file_name}/{bag_file_name}_0.db3"
     bag_file = fdir + b_name + db_name
     parser = bag_parser.BagParser(bag_file)
@@ -72,6 +72,6 @@ for b_name, db_name in zip(bag_name, database_name):
 # lla           = my_data['_v1_PosVelEcef'][()]['lla']
 
 # to extract timestamp without loss of resolution ---
-# it also sets initial time to 0:
-# htt_sec = header_time[0] - header_time[0][0]
-# tspan = htt_sec + 1e-9 * header_time[1]
+# it also sets initial time to 0.0:
+# htt_sec   = header_time[0] - header_time[0][0]
+# tspan     = htt_sec + 1e-9 * header_time[1]
