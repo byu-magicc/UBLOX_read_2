@@ -59,7 +59,8 @@ class BagParser():
         for mk in msg_keys:
             topic_data[mk] = np.array(topic_data[mk]).T
         #
+        topic_data['header_time'] = header_time
 
-        return header_time, topic_data
+        return topic_data
     #
 #
