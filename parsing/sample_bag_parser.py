@@ -75,3 +75,4 @@ for ii, (b_name, db_name) in enumerate(zip(bag_name, database_name)):
 # it also sets initial time to 0.0:
 # htt_sec   = header_time[0] - header_time[0][0]
 # tspan     = htt_sec + 1e-9 * header_time[1]
+# tspan    -= tspan[0]
