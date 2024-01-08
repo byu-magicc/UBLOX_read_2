@@ -108,6 +108,7 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     }
     else if (base_host_param == "")
     {
+        RCLCPP_INFO_STREAM(this->get_logger(), "This is the base function call! base_host: " << base_host_param << "!");
         initBase();
     }
     // Rover(1 local_host 1 local_port 1 base_host 1 base_port)
@@ -171,6 +172,7 @@ UBLOX_ROS::~UBLOX_ROS()
 
 bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
 {
+    // RCLCPP_INFO_STREAM(this->get_logger(), "The f9pID is: " << int(f9pID));
     switch(f9pID)
     {
         case 0:
@@ -187,7 +189,7 @@ bool UBLOX_ROS::evalF9PID(uint8_t f9pID)
             ecef_pos_tow_ptr_ = &base_ecef_pos_tow_;
             ecef_vel_tow_ptr_ = &base_ecef_vel_tow_;
             pvt_tow_ptr_ = &base_pvt_tow_;
-            return true;
+            return false;   // TODO: make sure a) this is the correct one to change to false and b) make sure it didn't break anything else
             break;
         default:
             return false;
