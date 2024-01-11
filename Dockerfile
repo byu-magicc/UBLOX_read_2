@@ -27,4 +27,4 @@ RUN rosdep install --from-paths . --ignore-src -y
 
 # Setup ROS environment variables
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc
-RUN echo "source /ublox_read_2_ws/install/setup.bash" >> /root/.bashrc
+RUN echo "source /ublox_ws/install/setup.bash" >> /root/.bashrc
