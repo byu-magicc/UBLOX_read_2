@@ -21,6 +21,7 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>builtin_interfaces</depend>
+  <depend>boost</depend>
 
 
   <export>

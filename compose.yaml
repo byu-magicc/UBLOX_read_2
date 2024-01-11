@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  ublox_read_2:
+
+    # Build image
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ROS_DISTRO=humble
+
+    # Enable interactive shell
+    stdin_open: true
+    tty: true
+
+    # Mount volumes
+    volumes:
+      # USB devices
+      - /dev:/dev
+
+    # Give sudo access for USB devices
+    privileged: true
+
+    # Give access to host network
+    network_mode: host
+
