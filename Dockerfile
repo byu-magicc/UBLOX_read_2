@@ -14,14 +14,16 @@ RUN apt install\
     -y
 
 # Set working directory
-WORKDIR /ublox_read_2_ws
+WORKDIR /ublox_ws
 
 # Install ros package dependencies
 COPY . src/ublox_read_2/
 RUN rosdep install --from-paths . --ignore-src -y
 
 # Build packages
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build"
+# If mounting src files in compose.yaml, don't include build in Dockerfile to avoid confusion
+#  with potentially desynced build files and src files.
+#RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build"
 
 # Setup ROS environment variables
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc
