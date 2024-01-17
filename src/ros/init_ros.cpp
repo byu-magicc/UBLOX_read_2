@@ -12,13 +12,22 @@ namespace ublox_ros
         std::string base_type;
         int surveytime;
         int surveyacc;
+        double base_lat;
+        double base_lon;
+        double base_alt;
 
         this->get_parameter<std::string>("base_type", base_type);
-        this->get_parameter<int>("Surveytime", surveytime); //Stationary base survey time
-        this->get_parameter<int>("Surveyacc", surveyacc); //Stationary base accuracy
+        this->get_parameter<int>("Surveytime", surveytime); //Surveyed base survey time
+        this->get_parameter<int>("Surveyacc", surveyacc); //Surveyed base accuracy
+        this->get_parameter<double>("base_lat", base_lat); //Fixed base latitude (deg)
+        this->get_parameter<double>("base_lon", base_lon); //Fixed base longitude (deg)
+        this->get_parameter<double>("base_alt", base_alt); //Fixed base altitude (m above ellipsoid)
         std::cerr << "base_type = " << base_type << "\n";
         std::cerr << "surveytime = " << surveytime << "\n";
         std::cerr << "surveyacc = " << surveyacc << "\n";
+        std::cerr << "base_lat = " << base_lat << "\n";
+        std::cerr << "base_lon = " << base_lon << "\n";
+        std::cerr << "base_alt = " << base_alt << "\n";
 
 
         //Initialize local arrays to contain parameters from xml file
@@ -61,7 +70,7 @@ namespace ublox_ros
 
         ublox_->initBase(local_host, local_port, rover_host, rover_port,
           base_type, rover_quantity_, constellation_, surveytime,
-          surveyacc, dynamic_model_);
+          surveyacc, base_lat, base_lon, base_alt, dynamic_model_);
     }
 
     void UBLOX_ROS::initRover()
@@ -148,7 +157,7 @@ namespace ublox_ros
         this->get_parameter<std::string>("local_host"+std::to_string(j+1), local_host[j]);
         this->get_parameter<uint16_t>("local_port"+std::to_string(j+1), local_port[j]);
 
-        //Determine whether the brover is moving or stationary?
+        //Determine whether the brover is moving, surveyed, or fixed
         std::string base_type = "moving";
 
         // Initiate the Brover

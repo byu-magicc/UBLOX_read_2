@@ -39,14 +39,18 @@ public:
      * @param local_port an array of uint16_t that contains local port numbers for base. (remote ports for rover)
      * @param remote_host an array of strings containing the rover hosts for base (local host for rover)
      * @param remote_port an array of uint16_t that contains rover ports for base. (local ports for rover)
-     * @param base_type stationary or moving base
+     * @param base_type surveyed, fixed, or moving base
      * @param rover_quantity number of rovers (number of elements in each array)
+     * @param base_lat fixed base latitude, in degrees
+     * @param base_lon fixed base longitude, in degrees
+     * @param base_alt fixed base altitude, in meters above MSL
      * @ref Diagram:    Base(local)--------->remote(rover)
      */
     void initBase(std::string local_host[], uint16_t local_port[],
                     std::string remote_host[], uint16_t remote_port[],
                     std::string base_type, int rover_quantity, GNSS_CONSTELLATION_t constellation, int surveytime,
-                    int surveyacc, uint8_t dynamic_model=CFG_VALSET_t::DYNMODE_AIRBORNE_1G);
+                    int surveyacc, double base_lat, double base_lon, double base_alt,
+                    uint8_t dynamic_model=CFG_VALSET_t::DYNMODE_AIRBORNE_1G);
 
     void initRover(std::string local_host, uint16_t local_port,
                    std::string remote_host, uint16_t remote_port,
@@ -75,7 +79,7 @@ public:
      * @param base_port an array containing only one element which is the base port for the unit
      * @param rover_host an array of strings containing the rover hosts for the brover
      * @param rover_port an array of uint16_t that contains rover ports for the brover
-     * @param base_type: stationary or moving base
+     * @param base_type: surveyed, fixed, or moving base
      * @param rover_quantity: number of rovers
      * @param gps 1 is on, 0 is off
      * @param glonas 1 is on, 0 is off
@@ -133,11 +137,12 @@ public:
     void config_f9p(uint8_t dynamic_model=CFG_VALSET_t::DYNMODE_AIRBORNE_1G);
     void config_rover();
     void config_ubx_msgs(int relpos);
-    void config_rtcm_msgs(int hasRover, int stationary, int surveryacc, int surveytime, GNSS_CONSTELLATION_t constellation);
+    void config_rtcm_msgs(int hasRover, int baseType, int surveyacc, int surveytime, int lat, int lon, int height, int latHp, int lonHp,
+                          int heightNP, GNSS_CONSTELLATION_t constellation);
 
     /**
      * @brief Configures the base setup by calling the correct base configuration function
-     * @param base_type string moving or stationary
+     * @param base_type string moving, surveyed, or fixed
      * @param gps       0: ignore GPS 1: listen to GPS
      * @param glonas    0: ignore 1: listen
      * @param beidou    0: ignore 1: listen
@@ -147,8 +152,8 @@ public:
      */
     void config_base(std::string base_type, int gps, int glonas, int beidou,
                       int galileo, int surveytime, int surveyacc);
-    void config_base_stationary(int on_off, int gps, int glonas, int beidou,
-                      int galileo, int surveytime, int surveyacc);
+    void config_base_surveyed(int on_off, int gps, int glonas, int beidou,
+                              int galileo, int surveytime, int surveyacc);
     /**
  * Configures moving base settings on F9P in the RAM layer (will be erased when device is rebooted)
  * 

@@ -22,6 +22,7 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
 
     std::map<std::string, std::string> string_params;
     std::map<std::string, int> int_params;
+    std::map<std::string, double> double_params;
 
     string_params["arrowbase"] = "";
     string_params["arrowtip"]= "";
@@ -46,9 +47,14 @@ UBLOX_ROS::UBLOX_ROS() : Node("ublox_ros") {
     int_params["base_port"] = 16145;
     int_params["base_port1"] = 16145;
 
+    double_params["base_lat"] = 0.0;
+    double_params["base_lon"] = 0.0;
+    double_params["base_alt"] = 0.0;
+
     
     this->declare_parameters("", string_params);
     this->declare_parameters("", int_params);
+    this->declare_parameters("", double_params);
 
     this->declare_parameter<bool>("debug", false);
 

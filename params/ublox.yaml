@@ -1,4 +1,7 @@
-/**: 
+#Shared parameters between launch files. Recompilation is required to update params found in ublox.yaml. Params
+# in launch.xml do not need re-compilation to be updated.
+
+/**:
   ros__parameters:
     #GNSS Constellations configured
     GPS: 1
@@ -6,16 +9,21 @@
     BEIDOU: 1
     GALILEO: 1
 
-    #moving or stationary base
-    base_type: "moving"  
+    #moving, fixed, or surveyed base
+    base_type: "fixed"
 
-    #if stationary the survey time and survey accuracy minimums
+    #if base is fixed, the location of the base
+    base_lat: 40.2462441   #degrees
+    base_lon: -111.6467831   #degrees
+    base_alt: 1399.787   #meters
+
+    #if surveyed, the survey time and survey accuracy minimums
     Surveytime: 30
     Surveyacc: 5000000
 
     #GNSS message output rate
     message_rate: 5
 
-    #These values are just for the base.  
+    #These values are just for the base.
     #They need to be changed in the launch file for the rover
     rover_quantity: 1    #number of rovers

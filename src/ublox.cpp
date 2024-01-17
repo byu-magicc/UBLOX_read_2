@@ -22,7 +22,7 @@ UBLOX::UBLOX(const std::string& port, int message_rate) :
     // configure the parsers/Enable Messages
 
     ubx_.set_nav_rate(message_rate);
-    //configuring SVIN messages is done in config_base_stationary()
+    //configuring SVIN messages is done in config_base_surveyed()
 
     checkSoftware();
 
@@ -105,30 +105,37 @@ void UBLOX::config_base(std::string base_type, int gps, int glonas, int beidou,
 {
     // DBG("config_base\n");
     // std::cerr<<"Configuring Base\n";
-    //Choose to configure as moving/mobile base or stationary
+    //Choose to configure as moving/mobile base or surveyed
     //bool mobile = false;
     if(base_type == "moving")   //Moving base
     {
         config_base_moving(1, gps, glonas, beidou, galileo);
-        config_base_stationary(0, gps, glonas, beidou, galileo, surveytime, surveyacc);
+        config_base_surveyed(0, gps, glonas, beidou, galileo, surveytime, surveyacc);
         // std::cerr<<"Moving Base\n";
     }
-    else if(base_type == "stationary")  //Stationary base
+    else if(base_type == "surveyed")  //Surveyed base
     {
         config_base_moving(0, gps, glonas, beidou, galileo);
-        config_base_stationary(1, gps, glonas, beidou, galileo, surveytime, surveyacc);
-        // std::cerr<<"Stationary Base\n";
+        config_base_surveyed(1, gps, glonas, beidou, galileo, surveytime, surveyacc);
+        // std::cerr<<"Surveyed Base\n";
+    }
+    else if(base_type == "fixed")
+    {
+        // This config_base function appears to be both redundant and unused, and should probably be removed. But rather
+        //  than break something I'll leave it alone and leave this note here for the next developer who will be
+        //  investing enough time into this library to clean and optimize it.
+        throw std::invalid_argument("Error in UBLOX::config_base: Fixed base type not implemented in config_base, use "
+                                    "initBase or add implementation.");
     }
     else    //Error thrown when type of base is unrecognized
     {
-        throw std::runtime_error("Failed to initialize base as moving or stationary");
+        throw std::invalid_argument("Error in UBLOX::config_base: Invalid baseType.");
     }
 }
 
-void UBLOX::config_base_stationary(int on_off, int gps, int glonas, int beidou,
-                  int galileo, int surveytime, int surveyacc)
+void UBLOX::config_base_surveyed(int on_off, int gps, int glonas, int beidou, int galileo, int surveytime, int surveyacc)
 {
-    // DBG("config_base_stationary\n");
+    // DBG("config_base_surveyed\n");
     ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*on_off, CFG_VALSET_t::RTCM_1005USB);
     ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*on_off, CFG_VALSET_t::MSGOUT_SVIN);
     ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*on_off, CFG_VALSET_t::TMODE_MODE);
@@ -168,7 +175,7 @@ void UBLOX::config_rover()
     ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::MSGOUT_VELECEF);
     // ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::MSGOUT_RAWX);
     // ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::MSGOUT_SFRBX);
-    //configuring SVIN messages is done in config_base_stationary()
+    //configuring SVIN messages is done in config_base_surveyed()
 }
 
 /**
@@ -255,7 +262,7 @@ void UBLOX::initRover(std::string local_host, uint16_t local_port,
 
     config_gnss(constellation);
     config_ubx_msgs(1);
-    config_rtcm_msgs(0, 0, 0, 0, constellation);
+    config_rtcm_msgs(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, constellation);
     // config_rover();
     config_f9p(dynamic_model);
     std::cerr<<"Initialized Rover\n";
@@ -265,7 +272,8 @@ void UBLOX::initBase(std::string local_host[], uint16_t local_port[],
                 std::string remote_host[], uint16_t remote_port[],
                 std::string base_type, int rover_quantity, 
                 GNSS_CONSTELLATION_t constellation, int surveytime,
-                int surveyacc, uint8_t dynamic_model)
+                int surveyacc, double base_lat, double base_lon, double base_alt,
+                uint8_t dynamic_model)
 {
     // std::cerr << "initBase \n";
     type_ = BASE;
@@ -313,13 +321,28 @@ void UBLOX::initBase(std::string local_host[], uint16_t local_port[],
         std::cerr<<"Initialized Base to Rover "+ std::to_string(i+1) +" UDP\n";
     }
 
-    if(base_type=="stationary")
+    if(base_type=="surveyed")
     {
-        config_rtcm_msgs(1, 1, surveyacc, surveytime, constellation);
+        config_rtcm_msgs(1, 1, surveyacc, surveytime, 0, 0, 0, 0, 0, 0, constellation);
+    }
+    else if(base_type=="fixed")
+    {
+        int lat = (int)(base_lat * 1e7);
+        int lon = (int)(base_lon * 1e7);
+        int height = (int)(base_alt * 100);
+        int latHP = (int)(((long)(base_lat * 1e9))%100);
+        int lonHP = (int)(((long)(base_lon * 1e9))%100);
+        int heightHP = ((int)(base_alt * 1e4))%100;
+
+        config_rtcm_msgs(1, 2, 0, 0, lat, lon, height, latHP, lonHP, heightHP, constellation);
+    }
+    else if(base_type=="moving")
+    {
+        config_rtcm_msgs(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, constellation);
     }
     else
     {
-        config_rtcm_msgs(1, 0, 0, 0, constellation);
+        throw std::invalid_argument("Error in UBLOX::initBase: Invalid baseType.");
     }
     config_gnss(constellation);
     config_ubx_msgs(0);
@@ -335,7 +358,7 @@ void UBLOX::initBrover(std::string local_host[], uint16_t local_port[],
                 
                 config_gnss(constellation);
                 config_ubx_msgs(1);
-                config_rtcm_msgs(1, 0, 0, 0, constellation);
+                config_rtcm_msgs(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, constellation);
 
                 // Declare type as Brover. This is used by rtcm_complete_cb()
                   type_ = BROVER;
@@ -602,7 +625,8 @@ void UBLOX::rtcm_complete_cb(const uint8_t *buf, size_t size)
         ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, relpos, CFG_VALSET_t::MSGOUT_RELPOSNED);
     }
 
-    void UBLOX::config_rtcm_msgs(int hasRover, int stationary, int surveyacc, int surveytime, GNSS_CONSTELLATION_t constellation)
+    void UBLOX::config_rtcm_msgs(int hasRover, int baseType, int surveyacc, int surveytime, int lat, int lon, int height, int latHP, int lonHP, int heightHP,
+                                 GNSS_CONSTELLATION_t constellation)
     {
         ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::RTCM_1074USB);
         ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::RTCM_1084USB);
@@ -617,13 +641,36 @@ void UBLOX::rtcm_complete_cb(const uint8_t *buf, size_t size)
         ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*hasRover*constellation.beidou_enable, CFG_VALSET_t::RTCM_1127USB);
         ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*hasRover*constellation.glonas_enable, CFG_VALSET_t::RTCM_1230USB);
 
-        ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*stationary, CFG_VALSET_t::RTCM_1005USB);
-        ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*stationary, CFG_VALSET_t::MSGOUT_SVIN);
-        ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*stationary, CFG_VALSET_t::TMODE_MODE);
-        // Survey in accuracy limit
-        ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, surveyacc*stationary, CFG_VALSET_t::TMODE_SVIN_ACC_LIMIT);
-        // Survey in time limit
-        ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, surveytime*stationary, CFG_VALSET_t::TMODE_SVIN_MIN_DUR);
+        switch (baseType) {
+            case 0:  // Disabled
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::RTCM_1005USB);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 0, CFG_VALSET_t::MSGOUT_SVIN);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*baseType, CFG_VALSET_t::TMODE_MODE);
+                break;
+            case 1:  // Surveyed
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::RTCM_1005USB);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::MSGOUT_SVIN);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*baseType, CFG_VALSET_t::TMODE_MODE);
+                // Survey in accuracy limit
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*surveyacc, CFG_VALSET_t::TMODE_SVIN_ACC_LIMIT);
+                // Survey in time limit
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*surveytime, CFG_VALSET_t::TMODE_SVIN_MIN_DUR);
+                break;
+            case 2:  // Fixed
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::RTCM_1005USB);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::MSGOUT_SVIN);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*baseType, CFG_VALSET_t::TMODE_MODE);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1, CFG_VALSET_t::TMODE_POS_TYPE);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*lat, CFG_VALSET_t::TMODE_LAT);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*lon, CFG_VALSET_t::TMODE_LON);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*height, CFG_VALSET_t::TMODE_HEIGHT);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*latHP, CFG_VALSET_t::TMODE_LAT_HP);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*lonHP, CFG_VALSET_t::TMODE_LON_HP);
+                ubx_.configure(CFG_VALSET_t::VERSION_0, CFG_VALSET_t::RAM, 1*heightHP, CFG_VALSET_t::TMODE_HEIGHT_HP);
+                break;
+            default:
+                throw std::invalid_argument("Error in UBLOX::config_rtcm_msgs: Invalid baseType.");
+        }
     }
 
     MON_VER_t UBLOX::getVersion()
