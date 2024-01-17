@@ -42,6 +42,8 @@ void UBLOX_ROS::pvtCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::NAV_PVT_t msg = ubx_msg.NAV_PVT;
 
+    // RCLCPP_INFO_STREAM(this->get_logger(), "Callback: pvtCB. ID: " << int(f9pID));
+
     if(!evalF9PID(f9pID)) return;
 
     *pvt_tow_ptr_ = msg.iTOW;
@@ -182,6 +184,8 @@ void UBLOX_ROS::posECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::NAV_POSECEF_t msg = ubx_msg.NAV_POSECEF;
 
+    // RCLCPP_INFO_STREAM(this->get_logger(), "Callback: posECEFCB. ID: " << int(f9pID));
+
     if(!evalF9PID(f9pID)) return;
 
     *ecef_pos_tow_ptr_ = msg.iTOW;
@@ -201,6 +205,8 @@ void UBLOX_ROS::posECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 void UBLOX_ROS::velECEFCB(const ublox::UBX_message_t &ubx_msg, uint8_t f9pID)
 {
     ublox::NAV_VELECEF_t msg = ubx_msg.NAV_VELECEF;
+
+    // RCLCPP_INFO_STREAM(this->get_logger(), "Callback: velECEFCB. ID: " << int(f9pID));
 
     if(!evalF9PID(f9pID)) return;
 
