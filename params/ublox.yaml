@@ -7,7 +7,7 @@
     GALILEO: 1
 
     #moving or stationary base
-    base_typei: "moving"  
+    base_type: "moving"  
 
     #if stationary the survey time and survey accuracy minimums
     Surveytime: 30
