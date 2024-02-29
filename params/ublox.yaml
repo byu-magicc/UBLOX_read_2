@@ -10,7 +10,10 @@
     GALILEO: 1
 
     #moving, fixed, or surveyed base
-    base_type: "fixed"
+    #moving base does not assume a fixed position and requires no surveying.
+    #fixed base assumes that it is at the position defined below, with no surveying.
+    #survey base will survey in its position for a set amount of time.
+    base_type: "surveyed"
 
     #if base is fixed, the location of the base
     base_lat: 40.2462441   #degrees
@@ -22,7 +25,7 @@
     Surveyacc: 5000000
 
     #GNSS message output rate
-    message_rate: 5
+    message_rate: 10
 
     #These values are just for the base.
     #They need to be changed in the launch file for the rover
