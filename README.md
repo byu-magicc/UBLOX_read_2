@@ -1,4 +1,5 @@
-# ublox_read_2
+# UBLOX_read_2
+
 A library for parsing UBLOX packets and interfacing with UBLOX gps receivers in ROS2. It has been designed for use with the M8N and F9P GNSS receivers.
 
 This library provides rather basic functionality and is designed to work under a linux environment, however it should probably work in Windows or Mac as it uses the cross-platform async_comm library as the serial interface.
@@ -7,7 +8,7 @@ The UBX parsing functionality is abstracted into a library for easy integration 
 
 Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version of this library.
 
-### Cloning the package
+## Cloning the package
 
 1. Install git if you haven't already done so. For example, on Ubuntu run the following:
 ```
@@ -23,7 +24,7 @@ git clone --recursive https://github.com/byu-magicc/UBLOX_read_2.git
 
 Note that this guide does not use ROS2 workspaces, for simplicity. If you are familiary with ROS2 (and modifying dockerfiles, if using docker) then using a workspace structure is recommended, but not required.
 
-### Running with a native ROS2 installation
+## Running with a native ROS2 installation
 
 To run this on a computer with ROS2 installed, use these directions.
 
@@ -49,7 +50,7 @@ colcon build
 source <path to repo>/install/setup.bash
 ```
 
-### Running within a docker container on a Linux system
+## Running within a docker container on a Linux system
 
 If you don't want to install ROS2 or aren't running Ubuntu, you can run this library in a docker container. The included Dockerfile and compose.yaml file should work out of the box for Linux. Windows or MacOS users will probably need to edit these files to get them to work.
 
@@ -85,7 +86,7 @@ colcon build
 source /ublox_read_2/install/setup.bash
 ```
 
-### Basic Setup
+## Basic Setup
 
 To perform a basic setup with one base station RTK GPS (base) and one moving RTK GPS (rover), follow these instructions.
 
@@ -106,13 +107,13 @@ ros2 launch ublox_read_2 rover_launch.xml
 
 4. If everything is working then you should see GPS-related topics show up with `ros2 topic list` and the `ros2 topic echo /rover/RelPos` should be publishing relative postion values, once the base station has surveyed in (check `/base/Survey` for survey status).
 
-# Tips
+### Tips
 
 To find all the ip addresses on your local network, first use `ip addr` to find your current ip address. Then use `nmap -sn 192.168.0.104/24` to scan all ip addresses on your network, replacing `192.168.1.118` with your ip address.
 
 To find the serial port of your GPS module, run `ls /dev/tty*` with your module unplugged. Then plug it in and re-run the command. The serial address that showed up when your GPS was plugged in should be your GPS. If nothing changed, check to make sure Linux sees your USB device with `lsusb`. If `lsusb` returns nothing, then you have a problem with your Linux configuration or your GPS module (or USB cable).
 
-### Advanced Setup
+## Advanced Setup
 
 See the included launch files for examples of how to do more advanced setups. Also look at the file `params/ublox.yaml` for additional configuration options.
 
