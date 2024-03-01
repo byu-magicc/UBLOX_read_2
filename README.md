@@ -1,12 +1,16 @@
 # UBLOX_read_2
 
-A library for parsing UBLOX packets and interfacing with UBLOX gps receivers in ROS2. It has been designed for use with the M8N and F9P GNSS receivers.
+A library for parsing UBLOX packets and interfacing with UBLOX RTK GPS receivers in ROS2. It has been designed for use with the M8N and F9P GNSS receivers.
 
 This library provides rather basic functionality and is designed to work under a linux environment, however it should probably work in Windows or Mac as it uses the cross-platform async_comm library as the serial interface.
 
 The UBX parsing functionality is abstracted into a library for easy integration in other projects. Example usage is given in the main.cpp file.
 
 Derived from https://github.com/byu-magicc/UBLOX_read which is the ROS1 version of this library.
+
+Find additional software documentation here: https://wiki.magiccvs.byu.edu/#!sw_guides/ublox_read.md
+
+Find additional hardware documentation here: https://wiki.magiccvs.byu.edu/#!hw_guides/ublox_f9p.md, https://wiki.magiccvs.byu.edu/#!hw_guides/c94_m8p.md
 
 ## Cloning the package
 
@@ -61,7 +65,7 @@ You will need to install docker engine if you haven't already. For Ubuntu, see t
 cd <path to repo>
 ```
 
-2. Build the docker image.
+2. Build the docker image. This only needs to be done once, so if you are re-running UBLOX_read_2 after setting it up, you can skip this step.
 ```
 docker compose build
 ```
@@ -109,14 +113,11 @@ ros2 launch ublox_read_2 rover_launch.xml
 
 ### Tips
 
-To find all the ip addresses on your local network, first use `ip addr` to find your current ip address. Then use `nmap -sn 192.168.0.104/24` to scan all ip addresses on your network, replacing `192.168.1.118` with your ip address.
+To find all the ip addresses on your local network, first use `ip addr` to find your current ip address. Then use `nmap -sn 192.168.0.104/24` to scan all ip addresses on your network, replacing `192.168.1.118` with your ip address. You may need to install `nmap`.
 
 To find the serial port of your GPS module, run `ls /dev/tty*` with your module unplugged. Then plug it in and re-run the command. The serial address that showed up when your GPS was plugged in should be your GPS. If nothing changed, check to make sure Linux sees your USB device with `lsusb`. If `lsusb` returns nothing, then you have a problem with your Linux configuration or your GPS module (or USB cable).
 
-## Advanced Setup
-
-See the included launch files for examples of how to do more advanced setups. Also look at the file `params/ublox.yaml` for additional configuration options.
-
-Find software documentation here: https://wiki.magiccvs.byu.edu/#!sw_guides/ublox_read.md
-
-Find hardware documentation here: https://wiki.magiccvs.byu.edu/#!hw_guides/ublox_f9p.md, https://wiki.magiccvs.byu.edu/#!hw_guides/c94_m8p.md
+To record GPS data, you can do this with a ROS bag. To record all published messages in a ROS bag, use this command.
+```
+ros2 bag record -a
+```

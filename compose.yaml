@@ -17,7 +17,7 @@ services:
     # Mount volumes
     volumes:
       # Mount ublox_read_2 src files
-      - .:/ublox_ws/src/ublox_read_2
+      - .:/ublox_read_2
       # Mount dev folder for USB devices. Can be modified to only specific devices.
       - /dev:/dev
 

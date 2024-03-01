@@ -14,10 +14,10 @@ RUN apt install\
     -y
 
 # Set working directory
-WORKDIR /ublox_ws
+WORKDIR /ublox_read_2
 
 # Install ros package dependencies
-COPY . src/ublox_read_2/
+COPY . .
 RUN rosdep install --from-paths . --ignore-src -y
 
 # Build packages
@@ -27,4 +27,4 @@ RUN rosdep install --from-paths . --ignore-src -y
 
 # Setup ROS environment variables
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc
-RUN echo "source /ublox_ws/install/setup.bash" >> /root/.bashrc
+RUN echo "source /ublox_read_2/install/setup.bash" >> /root/.bashrc
