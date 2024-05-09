@@ -19,43 +19,32 @@ database_name = [
     f'{bag_name[1]}_0.db3'
 ]
 
-topics = [
-    [
-        "/v2/PosVelEcef",
-        "/v2/PosVelTime",
-        "/v2/RelPos",
-        "/v2/RelPosFlags",
-        "/v2/RTCMInput"
-    ],
-    [
-        "/v1/PosVelEcef",
-        "/v1/PosVelTime",
-        "/v1/RelPos",
-        "/v1/RelPosFlags",
-        "/v1/RTCMInput",
-
-        "/v2/PosVelEcef",
-        "/v2/PosVelTime",
-        "/v2/RelPos",
-        "/v2/RelPosFlags",
-        "/v2/RTCMInput"
-    ]
-]
-
 # for bag_file_name in file_names:
 for ii, (b_name, db_name) in enumerate(zip(bag_name, database_name)):
     # bag_file = f"{bag_file_name}/{bag_file_name}_0.db3"
     bag_file = fdir + b_name + db_name
     parser = bag_parser.BagParser(bag_file)
 
+    topic_names = parser.topic_id.keys()
+
     file_data = {}
 
-    for flt_topic in topics[ii]:
+    for flt_topic in topic_names:
+
+        if flt_topic in ['/events/write_split', '/rosout', '/parameter_events']:
+            continue
+        #
+
         msg_list = parser.get_messages(flt_topic)
+
+        if not msg_list:
+            continue
+        #
 
         topic_data = parser.get_msg_data(msg_list)
         topic_safe = flt_topic.replace("/", "_")
-        file_data[topic_safe] = topic_data
+        topic_plain = topic_safe.removeprefix('_')
+        file_data[topic_plain] = topic_data
     #
 
     # np.savez("blah" + ".npz", **file_data)
