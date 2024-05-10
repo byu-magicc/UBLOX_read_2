@@ -19,6 +19,8 @@ database_name = [
     f'{bag_name[1]}_0.db3'
 ]
 
+ros_bookkeeping_topics = ['/events/write_split', '/rosout', '/parameter_events']
+
 # for bag_file_name in file_names:
 for ii, (b_name, db_name) in enumerate(zip(bag_name, database_name)):
     # bag_file = f"{bag_file_name}/{bag_file_name}_0.db3"
@@ -31,7 +33,7 @@ for ii, (b_name, db_name) in enumerate(zip(bag_name, database_name)):
 
     for flt_topic in topic_names:
 
-        if flt_topic in ['/events/write_split', '/rosout', '/parameter_events']:
+        if flt_topic in ros_bookkeeping_topics:
             continue
         #
 
